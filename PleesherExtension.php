@@ -147,8 +147,6 @@ class PleesherExtension
 		$h = new Pleesher_ViewHelper();
 
 		ob_start();
-
-		$implementation_path =
 		require self::getAbsoluteViewPath($view_path);
 		return ob_get_clean();
 	}
