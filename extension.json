@@ -1,0 +1,86 @@
+{
+	"name": "Pleesher",
+	"version": "0.9",
+	"author": [
+		"Jérémy Touati"
+	],
+	"url": "https://pleesher.com",
+	"descriptionmsg": "Game-like achievements for your wiki",
+	"license-name": "MIT",
+	"requires": {
+		"MediaWiki": ">= 1.25.0"
+	},
+	
+	"callback": "PleesherExtension::initialize",
+	
+	"MessagesDirs": {
+		"PleesherExtension": [
+			"i18n"
+		]
+	},
+	
+	"AutoloadClasses": {
+		"PleesherExtension": "PleesherExtension.php",
+		"PleesherImplementation": "PleesherImplementation.php",
+		"Pleesher_ViewHelper": "ViewHelper.php",
+		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
+		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
+		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
+		"Pleesher_GoalListPage": "pages/GoalListPage.php",
+		"Pleesher_AdminPage": "pages/AdminPage.php"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": [
+			"PleesherExtension::initializeParser"
+		],
+		"BeforePageDisplay": [
+			"PleesherExtension::beforePageDisplay"
+		],
+		"ParserBeforeStrip": [
+			"PleesherExtension::parserBeforeStrip"
+		],
+		"PageContentSaveComplete": [
+			"PleesherExtension::pageContentSaveComplete"
+		]
+	},
+	"APIModules": {
+		"pleesher.notifications": "Pleesher_GetNotificationsAction",
+		"pleesher.mark_notifications_read": "Pleesher_MarkNotificationsReadAction",
+		"pleesher.revoke_achievement": "Pleesher_RevokeAchievementAction"
+	},
+	"ResourceModules": {
+		"pleesher": {
+			"scripts": [
+				"resources/js/pleesher.js"
+			],
+			"position": "top"
+		},
+		"pleesher.notifications": {
+			"scripts": [
+				"resources/js/notifications.js"
+			],
+			"messages": [
+				"pleesher.achievement_unlocked"
+			],
+			"position": "bottom"
+		},
+		"toastr": {
+			"scripts": [
+				"resources/js/toastr.min.js"
+			],
+			"styles": [
+				"resources/css/toastr.min.css"
+			],
+			"position": "bottom"
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "PleesherExtension"
+	},
+	"SpecialPages": {
+		"Achievements": "Pleesher_GoalListPage",
+		"AchievementsAdmin": "Pleesher_AdminPage" 
+	},
+	"manifest_version": 1
+}

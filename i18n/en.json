@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jérémy Touati"
+		]
+	},
+	"achievements": "Achievements",
+	"achievementsadmin": "Admin Panel",
+	
+	"pleesher.achievement_unlocked": "Achievement unlocked!"
+}

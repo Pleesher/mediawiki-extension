@@ -1,0 +1,7 @@
+{
+	"require": {
+		"php": ">=5.3.0",
+		"monolog/monolog": "^1.17",
+		"pleesher/client": "dev-master"
+	}
+}
