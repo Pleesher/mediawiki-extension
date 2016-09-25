@@ -3,7 +3,7 @@ $(function() {
 		e.preventDefault();
 		
 		$.get($(this).prop('href')).done(function(e) {
-//			window.location = $(this).data('redirect');
+			window.location = $(this).data('redirect');
 		});
 	});
 });
