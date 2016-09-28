@@ -18,7 +18,6 @@
 			"i18n"
 		]
 	},
-	
 	"AutoloadClasses": {
 		"PleesherExtension": "PleesherExtension.php",
 		"PleesherImplementation": "PleesherImplementation.php",
@@ -27,6 +26,7 @@
 		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
 		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
 		"Pleesher_GoalListPage": "pages/GoalListPage.php",
+		"Pleesher_UserRankingPage": "pages/UserRankingPage.php",
 		"Pleesher_AdminPage": "pages/AdminPage.php"
 	},
 	"Hooks": {
@@ -80,7 +80,16 @@
 	},
 	"SpecialPages": {
 		"Achievements": "Pleesher_GoalListPage",
+		"UserRanking": "Pleesher_UserRankingPage",
 		"AchievementsAdmin": "Pleesher_AdminPage" 
+	},
+	"AvailableRights": [
+		"pleesher-admin"
+	],
+	"GroupPermissions": {
+		"sysop": {
+			"pleesher-admin": true
+		}
 	},
 	"manifest_version": 1
 }
