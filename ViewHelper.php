@@ -10,6 +10,6 @@ class Pleesher_ViewHelper
 
 	public function text($key, array $params = [])
 	{
-		return wfMessage('pleesher.' . $key)->params($params)->inContentLanguage()->escaped();
+		return wfMessage($key)->params($params)->inContentLanguage()->escaped();
 	}
 }
