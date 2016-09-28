@@ -16,6 +16,11 @@ abstract class PleesherImplementation
 		return [];
 	}
 
+	public function fillUser(User $user)
+	{
+		return $user;
+	}
+
 	public function fillGoal($goal)
 	{
 		return $goal;

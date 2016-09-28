@@ -2,6 +2,7 @@
 use Pleesher\Client\Client;
 use Pleesher\Client\Cache\LocalStorage;
 use Pleesher\Client\Cache\DatabaseStorage;
+use MediaWiki\Auth\AuthManager;
 
 class PleesherExtension
 {
@@ -76,11 +77,10 @@ class PleesherExtension
 			if ($article->getText(Revision::FOR_PUBLIC) == $text)
 			{
 				$user_id = User::idFromName($title->getText());
-				$user = User::newFromId($user_id);
+				$user = PleesherExtension::getUser($user_id);
 
 				$text .= PHP_EOL . PHP_EOL . self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
-					'username' => $title->getText(),
-					'user_id' => User::idFromName($title->getText())
+					'user' => $user
 				]));
 			}
 		}
@@ -114,8 +114,8 @@ class PleesherExtension
 	{
 		$user_name = $args['user'];
 		$user_id = User::idFromName($user_name);
-		$user = User::newFromId($user_id);
 
+		$user = self::getUser($user_id);
 		$achievements = self::getAchievements($user_id);
 
 		$actions = ['revoke'];
@@ -127,11 +127,42 @@ class PleesherExtension
 		]);
 	}
 
-	public static function getGoals(array $params)
+	public static function getUsers(array $options = [])
 	{
-		$goals = self::$pleesher->getGoals($params);
+		$pleesher_users = self::$pleesher->getUsers($options);
+
+		$users = array_map(function($pleesher_user) {
+			$wiki_user = User::newFromId($pleesher_user->id);
+			if (!AuthManager::singleton()->userExists($wiki_user->getName()))
+				return null;
+			$wiki_user->kudos = $pleesher_user->kudos;
+			return $wiki_user;
+		}, $pleesher_users);
+
+		$users = array_filter($users, function(User $user = null) {
+			return !is_null($user);
+		});
+
+		return array_map([self::$implementation, 'fillUser'], $users);
+	}
+
+	public static function getUser($user_id)
+	{
+		$pleesher_user = self::$pleesher->getUser($user_id);
+
+		$wiki_user = User::newFromId($pleesher_user->id);
+		if (!AuthManager::singleton()->userExists($wiki_user->getName()))
+			return null;
+
+		$wiki_user->kudos = $pleesher_user->kudos;
+
+		return self::$implementation->fillUser($wiki_user);
+	}
+
+	public static function getGoals(array $options = [])
+	{
+		$goals = self::$pleesher->getGoals($options);
 		return array_map([self::$implementation, 'fillGoal'], $goals);
-		return $goals;
 	}
 
 	public static function getAchievements($user_id)
