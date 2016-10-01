@@ -2,7 +2,6 @@ $(function() {
 	$.getJSON(mw.util.wikiScript('api') + '?action=pleesher.notifications', {
 		format: 'json'
 	}).success(function(result) {
-		console.log(result);
 		if (!jQuery.isEmptyObject(result.notifications)) {
 			var event_ids = [];
 			for (var i in result.notifications) {
