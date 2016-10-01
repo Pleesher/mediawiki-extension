@@ -53,6 +53,7 @@ class PleesherExtension
 
 	public static function initializeParser(Parser $parser)
 	{
+		$parser->setHook('Goal', 'PleesherExtension::viewGoal');
 		$parser->setHook('AchievementList', 'PleesherExtension::viewAchievements');
 		$parser->setHook('UserKudos', 'PleesherExtension::viewUserKudos');
 	}
@@ -93,6 +94,21 @@ class PleesherExtension
 		if ($user->isLoggedIn()) {
 			self::$pleesher->checkAchievements($user->getId());
 		}
+	}
+
+	public static function viewGoal($input, array $args, Parser $parser, PPFrame $frame)
+	{
+		$goal_code = $args['code'];
+		$user_name = isset($args['perspective']) ? $args['perspective'] : null;
+		$user_id = !is_null($user_name) ? User::idFromName($user_name) : null;
+
+		$goal = self::$pleesher->getGoal($goal_code, ['user_id' => $user_id]);
+		if (!is_object($goal))
+			return '';
+
+		return self::render('goal', [
+			'goal' => self::$implementation->fillGoal($goal)
+		]);
 	}
 
 	public static function viewUserKudos($input, array $args, Parser $parser, PPFrame $frame)
@@ -167,7 +183,29 @@ class PleesherExtension
 
 	public static function getAchievements($user_id)
 	{
-		$goals = self::$pleesher->getAchievements($user_id);
+		$achieved_goals = self::$pleesher->getAchievements($user_id);
+		return array_map([self::$implementation, 'fillGoal'], $achieved_goals);
+	}
+
+	public static function getClosestAchievements($user_id, $max = null)
+	{
+		$goals = self::$pleesher->getGoals(['user_id' => $user_id]);
+
+		$goals = array_filter($goals, function($goal) {
+			return isset($goal->progress) && $goal->progress->current > 0;
+		});
+
+		$advancements = [];
+		foreach ($goals as $goal)
+			$advancements[$goal->id] = (float)$goal->progress->current / $goal->progress->target;
+
+		uasort($goals, function($goal1, $goal2) use($advancements) {
+			return $advancements[$goal2->id] - $advancements[$goal1->id];
+		});
+
+		if (isset($max))
+			$goals = array_slice($goals, 0, $max);
+
 		return array_map([self::$implementation, 'fillGoal'], $goals);
 	}
 
