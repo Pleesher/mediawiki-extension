@@ -81,7 +81,8 @@ class PleesherExtension
 				$user = PleesherExtension::getUser($user_id);
 
 				$text .= PHP_EOL . PHP_EOL . self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
-					'user' => $user
+					'user' => $user,
+					'closest_achievements' => self::getClosestAchievements($user->getId(), 3)
 				]));
 			}
 		}
