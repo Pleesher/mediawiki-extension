@@ -1,1 +1,1 @@
-== Admin Page ==
+<a target="_blank" href="http://test.develop.pleesher.com/Liquipedia">Manage Liquipedia Goals</a> (ask PoP for usernames/passwords)
