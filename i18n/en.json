@@ -8,5 +8,9 @@
 	"achievementsadmin": "Admin Panel",
 	"userranking": "User Ranking",
 	
-	"pleesher.achievement_unlocked": "Achievement unlocked!"
+	"pleesher.achievement_unlocked": "Achievement unlocked!",
+		
+	"pleesher.goal_details.title": "$1 - Achievement Details",
+	"pleesher.goal.description.title": "Details",
+	"pleesher.goal.achievers.title": "Achievers"
 }

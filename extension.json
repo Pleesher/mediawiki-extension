@@ -21,13 +21,14 @@
 	"AutoloadClasses": {
 		"PleesherExtension": "PleesherExtension.php",
 		"PleesherImplementation": "PleesherImplementation.php",
-		"Pleesher_ViewHelper": "ViewHelper.php",
+		"Pleesher_AdminPage": "pages/AdminPage.php",
 		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
+		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
+		"Pleesher_GoalListPage": "pages/GoalListPage.php",
 		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
 		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
-		"Pleesher_GoalListPage": "pages/GoalListPage.php",
 		"Pleesher_UserRankingPage": "pages/UserRankingPage.php",
-		"Pleesher_AdminPage": "pages/AdminPage.php"
+		"Pleesher_ViewHelper": "ViewHelper.php"
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [
@@ -80,6 +81,7 @@
 	},
 	"SpecialPages": {
 		"Achievements": "Pleesher_GoalListPage",
+		"AchievementDetails": "Pleesher_GoalDetailsPage",
 		"UserRanking": "Pleesher_UserRankingPage",
 		"AchievementsAdmin": "Pleesher_AdminPage" 
 	},
