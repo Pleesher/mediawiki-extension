@@ -1,7 +1,7 @@
 <?php if (!isset($actions)) $actions = [] ?>
 
 <article id="goal-<?php echo $goal->code ?>" style="background-color:gold; padding:0 5px 5px 5px; margin:5px;">
-	<h1><?php echo htmlspecialchars($goal->title) ?>
+	<h1><a href="<?php echo $h->pageUrl('Special:AchievementDetails/' . $goal->code) ?>"><?php echo htmlspecialchars($goal->title) ?></a>
 	- <span class="kudos"><?php echo $goal->kudos ?> Kudos</span>
 	<?php if (!empty($goal->achieved)): ?>
 	<span style="color:green; margin-left:10px">✓</span>
