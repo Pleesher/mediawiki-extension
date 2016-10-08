@@ -149,11 +149,7 @@ class PleesherExtension
 		$pleesher_users = self::$pleesher->getUsers($options);
 
 		$users = array_map(function($pleesher_user) {
-			$wiki_user = User::newFromId($pleesher_user->id);
-			if (!AuthManager::singleton()->userExists($wiki_user->getName()))
-				return null;
-			$wiki_user->kudos = $pleesher_user->kudos;
-			return $wiki_user;
+			return self::pleesherUserToWikiUser($pleesher_user);
 		}, $pleesher_users);
 
 		$users = array_filter($users, function(User $user = null) {
@@ -167,11 +163,9 @@ class PleesherExtension
 	{
 		$pleesher_user = self::$pleesher->getUser($user_id);
 
-		$wiki_user = User::newFromId($pleesher_user->id);
-		if (!AuthManager::singleton()->userExists($wiki_user->getName()))
+		$wiki_user = self::pleesherUserToWikiUser($pleesher_user);
+		if (is_null($wiki_user))
 			return null;
-
-		$wiki_user->kudos = $pleesher_user->kudos;
 
 		return self::$implementation->fillUser($wiki_user);
 	}
@@ -182,10 +176,31 @@ class PleesherExtension
 		return array_map([self::$implementation, 'fillGoal'], $goals);
 	}
 
+	public static function getGoal($goal_code, array $options = [])
+	{
+		$goal = self::$pleesher->getGoal($goal_code, $options);
+		return self::$implementation->fillGoal($goal);
+	}
+
 	public static function getAchievements($user_id)
 	{
 		$achieved_goals = self::$pleesher->getAchievements($user_id);
 		return array_map([self::$implementation, 'fillGoal'], $achieved_goals);
+	}
+
+	public static function getAchievers($goal_code, array $options = [])
+	{
+		$achievers = self::$pleesher->getAchievers($goal_code);
+
+		$achievers = array_map(function($pleesher_user) {
+			return self::pleesherUserToWikiUser($pleesher_user);
+		}, $achievers);
+
+		$achievers = array_filter($achievers, function(User $user = null) {
+			return !is_null($user);
+		});
+
+		return array_map([self::$implementation, 'fillUser'], $achievers);
 	}
 
 	public static function getClosestAchievements($user_id, $max = null)
@@ -219,6 +234,17 @@ class PleesherExtension
 		ob_start();
 		require self::getAbsoluteViewPath($view_path);
 		return ob_get_clean();
+	}
+
+	protected static function pleesherUserToWikiUser($pleesher_user)
+	{
+		$wiki_user = User::newFromId($pleesher_user->id);
+		if (!AuthManager::singleton()->userExists($wiki_user->getName()))
+			return null;
+
+		$wiki_user->kudos = $pleesher_user->kudos;
+
+		return $wiki_user;
 	}
 
 	protected static function getAbsoluteViewPath($view_path)
