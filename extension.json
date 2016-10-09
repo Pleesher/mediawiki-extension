@@ -26,6 +26,7 @@
 		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
 		"Pleesher_GoalListPage": "pages/GoalListPage.php",
 		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
+		"Pleesher_RefreshCacheAction": "actions/RefreshCacheAction.php",
 		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
 		"Pleesher_UserRankingPage": "pages/UserRankingPage.php",
 		"Pleesher_ViewHelper": "ViewHelper.php"
@@ -45,8 +46,9 @@
 		]
 	},
 	"APIModules": {
-		"pleesher.notifications": "Pleesher_GetNotificationsAction",
 		"pleesher.mark_notifications_read": "Pleesher_MarkNotificationsReadAction",
+		"pleesher.notifications": "Pleesher_GetNotificationsAction",
+		"pleesher.refresh_cache": "Pleesher_RefreshCacheAction",
 		"pleesher.revoke_achievement": "Pleesher_RevokeAchievementAction"
 	},
 	"ResourceModules": {
