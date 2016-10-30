@@ -25,6 +25,13 @@ class Pleesher_UserRankingPage extends SpecialPage
 			return $user2->kudos - $user1->kudos;
 		});
 
+		$rank = 1;
+		$users = array_map(function($user) use($rank) {
+			$user->achievement_count = count(PleesherExtension::getAchievements($user->getId()));
+			$user->rank = $rank++;
+			return $user;
+		}, $users);
+
 		$html = PleesherExtension::render('user_ranking', [
 			'users' => $users
 		]);
