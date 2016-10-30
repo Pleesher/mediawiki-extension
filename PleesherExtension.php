@@ -79,10 +79,17 @@ class PleesherExtension
 			{
 				$user_id = User::idFromName($title->getText());
 				$user = PleesherExtension::getUser($user_id);
+				$achievement_count = count(self::getAchievements($user_id)) ?: 0;
+				$goal_count = count(self::$goal_data);
 
-				$text .= PHP_EOL . PHP_EOL . self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
+				if (!empty($text))
+					$text .= PHP_EOL . PHP_EOL;
+
+				$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
 					'user' => $user,
-					'closest_achievements' => self::getClosestAchievements($user->getId(), 3)
+					'closest_achievements' => self::getClosestAchievements($user->getId(), 3),
+					'achievement_count' => $achievement_count,
+					'goal_count' => $goal_count
 				]));
 			}
 		}
