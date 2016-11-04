@@ -180,12 +180,18 @@ class PleesherExtension
 	public static function getGoals(array $options = [])
 	{
 		$goals = self::$pleesher->getGoals($options);
+		$goals = array_filter($goals, function($goal) {
+			return isset(self::$goal_data[$goal->code]);
+		});
 		return array_map([self::$implementation, 'fillGoal'], $goals);
 	}
 
 	public static function getGoal($goal_code, array $options = [])
 	{
 		$goal = self::$pleesher->getGoal($goal_code, $options);
+		if (is_null($goal) || !isset(self::$goal_data[$goal->code]))
+			return null;
+
 		return self::$implementation->fillGoal($goal);
 	}
 
