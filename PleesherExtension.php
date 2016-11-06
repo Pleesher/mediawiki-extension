@@ -158,11 +158,15 @@ class PleesherExtension
 	public static function viewAchievementFeed($input, array $args, Parser $parser, PPFrame $frame)
 	{
 		$max_age = isset($args['max_age']) ? $args['max_age'] : 30;
+		$max_entries = isset($args['max_entries']) ? $args['max_entries'] : null;
 
 		$achievements = self::getParticipations(['status' => Client::PARTICIPATION_STATUS_ACHIEVED, 'max_age' => $max_age]);
 		uasort($achievements, function($achievement1, $achievement2) {
 			return $achievement2->datetime->getTimestamp() - $achievement1->datetime->getTimestamp();
 		});
+
+		if (isset($max_entries))
+			$achievements = array_slice($achievements, 0, $max_entries);
 
 		return self::render('feed', [
 			'achievements' => $achievements
