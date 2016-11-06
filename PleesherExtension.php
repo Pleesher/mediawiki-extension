@@ -55,6 +55,7 @@ class PleesherExtension
 	{
 		$parser->setHook('Goal', 'PleesherExtension::viewGoal');
 		$parser->setHook('AchievementList', 'PleesherExtension::viewAchievements');
+		$parser->setHook('AchievementFeed', 'PleesherExtension::viewAchievementFeed');
 		$parser->setHook('UserKudos', 'PleesherExtension::viewUserKudos');
 	}
 
@@ -136,6 +137,9 @@ class PleesherExtension
 
 	public static function viewAchievements($input, array $args, Parser $parser, PPFrame $frame)
 	{
+		if (!isset($args['user']))
+			return '';
+
 		$user_name = $args['user'];
 		$user_id = User::idFromName($user_name);
 
@@ -148,6 +152,20 @@ class PleesherExtension
 			'user' => $user,
 			'goals' => $achievements,
 			'actions' => $actions
+		]);
+	}
+
+	public static function viewAchievementFeed($input, array $args, Parser $parser, PPFrame $frame)
+	{
+		$max_age = isset($args['max_age']) ? $args['max_age'] : 30;
+
+		$achievements = self::getParticipations(['status' => Client::PARTICIPATION_STATUS_ACHIEVED, 'max_age' => $max_age]);
+		uasort($achievements, function($achievement1, $achievement2) {
+			return $achievement2->datetime->getTimestamp() - $achievement1->datetime->getTimestamp();
+		});
+
+		return self::render('feed', [
+			'achievements' => $achievements
 		]);
 	}
 
@@ -199,6 +217,23 @@ class PleesherExtension
 	{
 		$achieved_goals = self::$pleesher->getAchievements($user_id);
 		return array_map([self::$implementation, 'fillGoal'], $achieved_goals);
+	}
+
+	public static function getParticipations(array $filters = [])
+	{
+		$participations = self::$pleesher->getParticipations($filters);
+
+		$participations = array_map(function($participation) {
+			$participation->author = self::pleesherUserToWikiUser($participation->author);
+			if (isset($participation->author))
+				$participation->author = self::$implementation->fillUser($participation->author);
+			return $participation;
+		}, $participations);
+		$participations = array_filter($participations, function($participation) {
+			return !is_null($participation->author);
+		});
+
+		return $participations;
 	}
 
 	public static function getAchievers($goal_code, array $options = [])
