@@ -5,7 +5,7 @@
 		"Jérémy Touati"
 	],
 	"url": "https://pleesher.com",
-	"descriptionmsg": "Game-like achievements for your wiki",
+	"descriptionmsg": "pleesher-desc",
 	"license-name": "MIT",
 	"requires": {
 		"MediaWiki": ">= 1.25.0"
