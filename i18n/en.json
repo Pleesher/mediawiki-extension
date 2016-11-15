@@ -13,5 +13,8 @@
 		
 	"pleesher.goal_details.title": "$1 - Achievement Details",
 	"pleesher.goal.description.title": "Details",
-	"pleesher.goal.achievers.title": "Achievers"
+	"pleesher.goal.achievers.title": "Achievers",
+		
+	"pleesher.error.title": "Error",
+	"pleesher.error.text.no_such_goal": "Goal '$1' could not be found"
 }
