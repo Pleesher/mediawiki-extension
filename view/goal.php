@@ -14,6 +14,6 @@
 	<?php echo htmlspecialchars($goal->short_description) ?>
 
 	<?php if (isset($user) && $goal->achieved && in_array('revoke', $actions)): ?>
-	<a data-redirect="self" href="/api.php?action=pleesher.revoke_achievement&user_id=<?php echo $user->getId() ?>&goal_id=<?php echo $goal->id ?>">Revoke / recheck</a>
+	<a data-redirect="self" href="<?php echo $h->actionUrl('pleesher.revoke_achievement', ['user_id' => $user->getId(), 'goal_id' => $goal->id]) ?>">Revoke / recheck</a>
 	<?php endif ?>
 </article>
