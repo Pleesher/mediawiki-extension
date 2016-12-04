@@ -4,7 +4,7 @@ $(function() {
 		
 		var redirectUrl = $(this).data('redirect');
 		
-		$.get($(this).prop('href')).done(function(e) {
+		$.get($(this).prop('href')).done(function(result) {
 			if (redirectUrl == 'self') {
 				window.location.reload();
 			}

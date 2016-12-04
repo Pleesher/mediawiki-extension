@@ -1,4 +1,5 @@
 <?php
+// FIXME: rename to something that doesn't include "view"--it's used outside too
 class Pleesher_ViewHelper
 {
 	public function pageUrl($page_name, $absolute = false)
