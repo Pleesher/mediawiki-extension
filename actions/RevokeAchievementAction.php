@@ -15,9 +15,9 @@ class Pleesher_RevokeAchievementAction extends ApiBase
 		$user_id = (int)$this->getParameter('user_id');
 		$goal_id = (int)$this->getParameter('goal_id');
 
-		$pleesher_notifications = PleesherExtension::$pleesher->revoke($user_id, $goal_id);
-		$this->getResult()->addValue(null, 'success', 1);
+		$result = PleesherExtension::$pleesher->revoke($user_id, $goal_id);
 
+		$this->getResult()->addValue(null, 'success', $result ? 1 : 0);
 		return true;
 	}
 }
