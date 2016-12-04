@@ -7,6 +7,7 @@
 	"pleesher-desc": "Game-like achievements for your wiki",
 	"achievements": "Achievements",
 	"achievementsadmin": "Admin Panel",
+	"achievementserror": "Error retrieving achievements",
 	"userranking": "User Ranking",
 	
 	"pleesher.achievement_unlocked": "Achievement unlocked!",
@@ -16,5 +17,6 @@
 	"pleesher.goal.achievers.title": "Achievers",
 		
 	"pleesher.error.title": "Error",
+	"pleesher.error.text.generic": "Achievement data could not be retrieved.",
 	"pleesher.error.text.no_such_goal": "Goal '$1' could not be found"
 }

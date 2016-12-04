@@ -3,6 +3,7 @@ use Pleesher\Client\Client;
 use Pleesher\Client\Cache\LocalStorage;
 use Pleesher\Client\Cache\DatabaseStorage;
 use MediaWiki\Auth\AuthManager;
+use Pleesher\Client\Exception\Exception;
 
 class PleesherExtension
 {
@@ -13,6 +14,7 @@ class PleesherExtension
 	public static $pleesher;
 	public static $goal_data;
 	public static $implementation;
+	public static $view_helper;
 
 	public static function getConfigValue($key, $default = null)
 	{
@@ -35,6 +37,16 @@ class PleesherExtension
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, 'pleesher_cache')));
+
+		self::$view_helper = new Pleesher_ViewHelper();
+		self::$pleesher->setExceptionHandler(function(Exception $e) {
+			set_error_handler(function($code, $description, $file = null, $line = null, $context = null) {
+				header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
+				die;
+			});
+			trigger_error($e->getMessage());
+			restore_error_handler();
+		});
 
 		$logger = self::$implementation->getLogger();
 		if (!is_null($logger))
@@ -79,22 +91,30 @@ class PleesherExtension
 
 			if ($article->getText(Revision::FOR_PUBLIC) == $text)
 			{
-				$user_id = User::idFromName($title->getText());
-				$user = PleesherExtension::getUser($user_id);
-				$achievement_count = count(self::getAchievements($user_id)) ?: 0;
-				$showcased_achievement_count = count(self::$pleesher->getObjectData('goal', null, $user_id, 'showcased'));
-				$goal_count = count(self::$goal_data);
+				self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
 
-				if (!empty($text))
-					$text .= PHP_EOL . PHP_EOL;
+				try {
+					$user_id = User::idFromName($title->getText());
+					$user = PleesherExtension::getUser($user_id);
+					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
+					$showcased_achievement_count = count(self::$pleesher->getObjectData('goal', null, $user_id, 'showcased'));
+					$goal_count = count(self::$goal_data);
 
-				$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
-					'user' => $user,
-					'closest_achievements' => self::getClosestAchievements($user->getId(), 3),
-					'achievement_count' => $achievement_count,
-					'showcased_achievement_count' => $showcased_achievement_count,
-					'goal_count' => $goal_count
-				]));
+					if (!empty($text))
+						$text .= PHP_EOL . PHP_EOL;
+
+					$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
+						'user' => $user,
+						'closest_achievements' => self::getClosestAchievements($user->getId(), 3),
+						'achievement_count' => $achievement_count,
+						'showcased_achievement_count' => $showcased_achievement_count,
+						'goal_count' => $goal_count
+					]));
+				} catch (Exception $e) {
+					$text .= self::render('error');
+				}
+
+				self::$pleesher->restoreExceptionHandler();
 			}
 		}
 
@@ -307,7 +327,7 @@ class PleesherExtension
 	{
 		extract($params);
 
-		$h = new Pleesher_ViewHelper();
+		$h = self::$view_helper;
 
 		ob_start();
 		require self::getAbsoluteViewPath($view_path);

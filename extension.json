@@ -22,6 +22,7 @@
 		"PleesherExtension": "PleesherExtension.php",
 		"PleesherImplementation": "PleesherImplementation.php",
 		"Pleesher_AdminPage": "pages/AdminPage.php",
+		"Pleesher_ErrorPage": "pages/Error.php",
 		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
 		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
 		"Pleesher_GoalListPage": "pages/GoalListPage.php",
@@ -84,6 +85,7 @@
 		"remoteExtPath": "PleesherExtension"
 	},
 	"SpecialPages": {
+		"AchievementsError": "Pleesher_ErrorPage",
 		"Achievements": "Pleesher_GoalListPage",
 		"AchievementDetails": "Pleesher_GoalDetailsPage",
 		"UserRanking": "Pleesher_UserRankingPage",
