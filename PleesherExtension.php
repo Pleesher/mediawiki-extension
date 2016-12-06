@@ -95,7 +95,11 @@ class PleesherExtension
 
 				try {
 					$user_id = User::idFromName($title->getText());
+					if (is_null($user_id))
+						return null;
 					$user = PleesherExtension::getUser($user_id);
+					if (!is_object($user))
+						return null;
 					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
 					$showcased_achievement_count = count(self::$pleesher->getObjectData('goal', null, $user_id, 'showcased'));
 					$goal_count = count(self::$goal_data);
@@ -110,7 +114,10 @@ class PleesherExtension
 						'showcased_achievement_count' => $showcased_achievement_count,
 						'goal_count' => $goal_count
 					]));
+
 				} catch (Exception $e) {
+					if (!empty($text))
+						$text .= PHP_EOL . PHP_EOL;
 					$text .= self::render('error');
 				}
 
@@ -148,6 +155,12 @@ class PleesherExtension
 		$user_name = isset($args['user']) ? $args['user'] : null;
 		$user_id = !is_null($user_name) ? User::idFromName($user_name) : null;
 
+		if (is_null($user_id))
+		{
+			self::$pleesher->logger->error(sprintf('No such wiki user: %s (%s)', $user_name, $_SERVER['REQUEST_URI']));
+			return '';
+		}
+
 		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
 		$showcased_goals = [];
 		foreach ($showcased_goal_ids as $goal_id => $showcased) {
@@ -165,12 +178,12 @@ class PleesherExtension
 
 	public static function viewUserKudos($input, array $args, Parser $parser, PPFrame $frame)
 	{
-		$username = $args['user'];
-		$user_id = User::idFromName($username);
+		$user_name = $args['user'];
+		$user_id = User::idFromName($user_name);
 
-		if ($user_id == 0)
+		if (is_null($user_id))
 		{
-			self::$pleesher->logger->error(sprintf('No such wiki user: %s (%s)', $username, $_SERVER['REQUEST_URI']));
+			self::$pleesher->logger->error(sprintf('No such wiki user: %s (%s)', $user_name, $_SERVER['REQUEST_URI']));
 			return 0;
 		}
 
@@ -185,6 +198,12 @@ class PleesherExtension
 
 		$user_name = $args['user'];
 		$user_id = User::idFromName($user_name);
+
+		if (is_null($user_id))
+		{
+			self::$pleesher->logger->error(sprintf('No such wiki user: %s (%s)', $user_name, $_SERVER['REQUEST_URI']));
+			return '';
+		}
 
 		$user = self::getUser($user_id);
 		$achievements = self::getAchievements($user_id);
