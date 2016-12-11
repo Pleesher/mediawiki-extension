@@ -116,7 +116,7 @@ class PleesherExtension
 				} catch (Exception $e) {
 					if (!empty($text))
 						$text .= PHP_EOL . PHP_EOL;
-					$text .= self::render('error');
+					$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
 				}
 
 				self::$pleesher->restoreExceptionHandler();
