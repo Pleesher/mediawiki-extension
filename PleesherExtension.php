@@ -162,8 +162,8 @@ class PleesherExtension
 		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
 		$showcased_goals = [];
 		foreach ($showcased_goal_ids as $goal_id => $showcased) {
-			if ($showcased)
-				$showcased_goals[] = self::getGoal($goal_id);
+			if ($showcased && is_object($goal = self::getGoal($goal_id)))
+				$showcased_goals[] = $goal;
 		}
 
 		$removable = is_object($GLOBALS['wgUser']) && $user_id == $GLOBALS['wgUser']->getId();
@@ -285,10 +285,7 @@ class PleesherExtension
 	{
 		$goal = self::$pleesher->getGoal($goal_id_or_code, $options);
 		if (is_null($goal) || !isset(self::$goal_data[$goal->code]))
-		{
-			header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
-			die;
-		}
+			return null;
 
 		return self::$implementation->fillGoal($goal);
 	}
