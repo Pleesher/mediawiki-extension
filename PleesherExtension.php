@@ -333,7 +333,7 @@ class PleesherExtension
 		$goals = self::$pleesher->getGoals(['user_id' => $user_id]);
 
 		$goals = array_filter($goals, function($goal) {
-			return !$goal->achieved && isset($goal->progress) && $goal->progress->current > 0;
+			return isset(self::$goal_data[$goal->code]) && !$goal->achieved && isset($goal->progress) && $goal->progress->current > 0;
 		});
 
 		$advancements = [];
