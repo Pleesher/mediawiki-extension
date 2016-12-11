@@ -99,7 +99,7 @@ class PleesherExtension
 					if (!is_object($user))
 						return null;
 					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
-					$showcased_achievement_count = count(self::$pleesher->getObjectData('goal', null, $user_id, 'showcased'));
+					$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
 					$goal_count = count(self::$goal_data);
 
 					if (!empty($text))
@@ -159,13 +159,7 @@ class PleesherExtension
 			return '';
 		}
 
-		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
-		$showcased_goals = [];
-		foreach ($showcased_goal_ids as $goal_id => $showcased) {
-			if ($showcased && is_object($goal = self::getGoal($goal_id)))
-				$showcased_goals[] = $goal;
-		}
-
+		$showcased_goals = self::getShowcasedAchievements($user_id);
 		$removable = is_object($GLOBALS['wgUser']) && $user_id == $GLOBALS['wgUser']->getId();
 
 		return self::render('showcase', [
@@ -294,6 +288,19 @@ class PleesherExtension
 		});
 
 		return array_map([self::$implementation, 'fillGoal'], $achieved_goals);
+	}
+
+	public static function getShowcasedAchievements($user_id)
+	{
+		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
+		$showcased_goals = [];
+		foreach ($showcased_goal_ids as $goal_id => $showcased)
+		{
+			if ($showcased && is_object($goal = self::getGoal($goal_id)))
+				$showcased_goals[] = $goal;
+		}
+
+		return $showcased_goals;
 	}
 
 	public static function getParticipations(array $filters = [])
