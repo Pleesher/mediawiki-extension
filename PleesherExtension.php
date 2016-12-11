@@ -266,10 +266,20 @@ class PleesherExtension
 
 	public static function getGoals(array $options = [])
 	{
-		$goals = self::$pleesher->getGoals($options);
+		$goals = self::$pleesher->getGoals(array_merge($options, ['index_by' => 'code']));
+
+		$_goals = [];
+		foreach (self::$goal_data as $code => $goal_data)
+		{
+			if (isset($goals[$code]))
+				$_goals[$code] = $goals[$code];
+		}
+		$goals = $_goals;
+
 		$goals = array_filter($goals, function($goal) {
 			return isset(self::$goal_data[$goal->code]);
 		});
+
 		return array_map([self::$implementation, 'fillGoal'], $goals);
 	}
 
