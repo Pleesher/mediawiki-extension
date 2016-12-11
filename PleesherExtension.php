@@ -274,10 +274,6 @@ class PleesherExtension
 		}
 		$goals = $_goals;
 
-		$goals = array_filter($goals, function($goal) {
-			return isset(self::$goal_data[$goal->code]);
-		});
-
 		return array_map([self::$implementation, 'fillGoal'], $goals);
 	}
 
@@ -293,6 +289,10 @@ class PleesherExtension
 	public static function getAchievements($user_id)
 	{
 		$achieved_goals = self::$pleesher->getAchievements($user_id);
+		$achieved_goals = array_filter($achieved_goals, function($goal) {
+			return isset(self::$goal_data[$goal->code]);
+		});
+
 		return array_map([self::$implementation, 'fillGoal'], $achieved_goals);
 	}
 
