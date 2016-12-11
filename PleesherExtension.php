@@ -39,13 +39,11 @@ class PleesherExtension
 		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, 'pleesher_cache')));
 
 		self::$view_helper = new Pleesher_ViewHelper();
+
 		self::$pleesher->setExceptionHandler(function(Exception $e) {
-			set_error_handler(function($code, $description, $file = null, $line = null, $context = null) {
-				header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
-				die;
-			});
-			trigger_error($e->getMessage());
-			restore_error_handler();
+			$_SESSION[__CLASS__]['exception'] = $e;
+			header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
+			die;
 		});
 
 		$logger = self::$implementation->getLogger();
@@ -287,7 +285,10 @@ class PleesherExtension
 	{
 		$goal = self::$pleesher->getGoal($goal_id_or_code, $options);
 		if (is_null($goal) || !isset(self::$goal_data[$goal->code]))
-			return null;
+		{
+			header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
+			die;
+		}
 
 		return self::$implementation->fillGoal($goal);
 	}

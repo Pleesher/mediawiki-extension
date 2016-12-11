@@ -13,7 +13,16 @@ class Pleesher_ErrorPage extends SpecialPage
 		$this->checkReadOnly();
 		$this->outputHeader();
 
-		$html = PleesherExtension::render('error');
+		if (isset($_SESSION[\PleesherExtension::class]['exception']))
+		{
+			$e = $_SESSION[\PleesherExtension::class]['exception'];
+			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: []);;
+			unset($_SESSION[\PleesherExtension::class]['exception']);
+		}
+		else
+			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.generic');
+
+		$html = PleesherExtension::render('error', ['error_message' => $error_message]);
 		$this->getOutput()->addHTML($html);
 	}
 }

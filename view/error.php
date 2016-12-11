@@ -1,1 +1,1 @@
-<i><?php echo $h->text('pleesher.error.text.generic') ?></i>
+<i><?php echo $error_message ?></i>
