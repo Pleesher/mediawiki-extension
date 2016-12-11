@@ -16,10 +16,12 @@ class Pleesher_ShowcaseAchievementAction extends ApiBase
 		$goal_id = (int)$this->getParameter('goal_id');
 
 		$achievements = PleesherExtension::getAchievements($this->getUser()->getId());
-		if (!in_array($goal_id, array_keys($achievements)))
-			return false;
-
 		$remove = $this->getParameter('remove') == '1';
+		if (!$remove && !in_array($goal_id, array_keys($achievements)))
+		{
+			$this->getResult()->addValue(null, 'success', 0);
+			return false;
+		}
 
 		$result = $remove
 			? PleesherExtension::$pleesher->deleteObjectData('goal', $goal_id, $this->getUser()->getId(), 'showcased')
