@@ -16,7 +16,7 @@ class Pleesher_ErrorPage extends SpecialPage
 		if (isset($_SESSION[\PleesherExtension::class]['exception']))
 		{
 			$e = $_SESSION[\PleesherExtension::class]['exception'];
-			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: []);;
+			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: []);
 			unset($_SESSION[\PleesherExtension::class]['exception']);
 		}
 		else
