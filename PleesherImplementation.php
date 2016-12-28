@@ -2,6 +2,12 @@
 abstract class PleesherImplementation
 {
 	public abstract function getGoalData();
+	public abstract function getI18nPrefix();
+
+	public function getGoalCategories()
+	{
+		return [];
+	}
 
 	public function getLogger()
 	{
