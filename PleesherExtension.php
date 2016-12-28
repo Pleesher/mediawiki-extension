@@ -16,16 +16,30 @@ class PleesherExtension
 	public static $implementation;
 	public static $view_helper;
 
+	/**
+	 * Retrieve an extension's configuration value.
+	 * @param $key A config key
+	 * @param string $default A value to return if the requested config value doesn't exist
+	 * @return string|null The config value or $default
+	 */
 	public static function getConfigValue($key, $default = null)
 	{
 		return isset($GLOBALS['wg' . get_called_class() . $key]) ? $GLOBALS['wg' . get_called_class() . $key] : $default;
 	}
 
+	/**
+	 * Define a PleesherImplementation instance. Must be called by PleesherExtension's subclasses.
+	 * @param \PleesherImplementation $implementation The PleesherImplementation instance
+	 */
 	public static function setImplementation(\PleesherImplementation $implementation)
 	{
 		self::$implementation = $implementation;
 	}
 
+	/**
+	 * Initialize the extension: OAuth2 client, logging, etc.
+	 * @throws \Exception setImplementation must be called beforehand, otherwise this will throw an exception
+	 */
 	public static function initialize()
 	{
 		if (!isset(self::$implementation))
@@ -61,6 +75,9 @@ class PleesherExtension
 		}
 	}
 
+	/**
+	 * Initialize extension's parser hooks
+	 */
 	public static function initializeParser(Parser $parser)
 	{
 		$parser->setHook('Goal', 'PleesherExtension::viewGoal');
@@ -70,6 +87,9 @@ class PleesherExtension
 		$parser->setHook('UserKudos', 'PleesherExtension::viewUserKudos');
 	}
 
+	/**
+	 * Load modules (CSS/scripts/etc) before page display
+	 */
 	public static function beforePageDisplay(OutputPage &$out, Skin &$skin)
 	{
 		$out->addModules('pleesher');
@@ -80,11 +100,16 @@ class PleesherExtension
 		$out->addModuleStyles('toastr');
 	}
 
+	/**
+	 * Alter text page "parts" display before it's displayed.
+	 * Here, used for users' profile pages.
+	 */
 	public static function parserBeforeStrip(&$parser, &$text, &$strip_state)
 	{
 		$title = $parser->getTitle();
 
-		if ($title->getNamespace() == NS_USER) {
+		if ($title->getNamespace() == NS_USER)
+		{
 			$article = WikiPage::factory($title);
 
 			if ($article->getText(Revision::FOR_PUBLIC) == $text)
@@ -126,6 +151,9 @@ class PleesherExtension
 		return true;
 	}
 
+	/**
+	 * Called after a page was saved
+	 */
 	public static function pageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 	{
 		if ($user->isLoggedIn()) {
@@ -133,6 +161,10 @@ class PleesherExtension
 		}
 	}
 
+	/**
+	 * Displays a Pleesher goal
+	 * @return string A HTML template of it
+	 */
 	public static function viewGoal($input, array $args, Parser $parser, PPFrame $frame)
 	{
 		$goal_code = $args['code'];
@@ -148,6 +180,10 @@ class PleesherExtension
 		]);
 	}
 
+	/**
+	 * Displays a goal "showcase" (goals that a user chose to brag about)
+	 * @return string A HTML template of it
+	 */
 	public static function viewShowcase($input, array $args, Parser $parser, PPFrame $frame)
 	{
 		$user_name = isset($args['user']) ? $args['user'] : null;
@@ -168,6 +204,10 @@ class PleesherExtension
 		]);
 	}
 
+	/**
+	 * Displays the user Kudos
+	 * @return string The number of Kudos (pure text but might include HTML someday)
+	 */
 	public static function viewUserKudos($input, array $args, Parser $parser, PPFrame $frame)
 	{
 		$user_name = $args['user'];
@@ -183,6 +223,10 @@ class PleesherExtension
 		return $user->kudos;
 	}
 
+	/**
+	 * Displays the user's list of achievements
+	 * @return string A HTML template of it
+	 */
 	public static function viewAchievements($input, array $args, Parser $parser, PPFrame $frame)
 	{
 		if (!isset($args['user']))
@@ -212,6 +256,10 @@ class PleesherExtension
 		]);
 	}
 
+	/**
+	 * Displays a list of the last unlocked achievements
+	 * @return string A HTML template of it
+	 */
 	public static function viewAchievementFeed($input, array $args, Parser $parser, PPFrame $frame)
 	{
 		$max_age = isset($args['max_age']) ? $args['max_age'] : 30;
@@ -230,6 +278,11 @@ class PleesherExtension
 		]);
 	}
 
+	/**
+	 * Retrieves a list of Pleesher users (as wiki users)
+	 * @param array $options An optional array of options to be passed over to Client::getUsers
+	 * @return array A list of Pleesher users
+	 */
 	public static function getUsers(array $options = [])
 	{
 		$pleesher_users = self::$pleesher->getUsers($options);
