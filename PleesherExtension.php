@@ -13,6 +13,7 @@ class PleesherExtension
 	public static $pdo;
 	public static $pleesher;
 	public static $goal_data;
+	public static $goal_categories;
 	public static $implementation;
 	public static $view_helper;
 
@@ -52,7 +53,7 @@ class PleesherExtension
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, 'pleesher_cache')));
 
-		self::$view_helper = new Pleesher_ViewHelper();
+		self::$view_helper = new Pleesher_ViewHelper(self::$implementation->getI18nPrefix());
 
 		self::$pleesher->setExceptionHandler(function(Exception $e) {
 			$_SESSION[__CLASS__]['exception'] = $e;
@@ -73,6 +74,8 @@ class PleesherExtension
 				'pdo' => self::$pdo
 			]));
 		}
+
+		self::$goal_categories = self::$implementation->getGoalCategories();
 	}
 
 	/**
@@ -93,11 +96,15 @@ class PleesherExtension
 	public static function beforePageDisplay(OutputPage &$out, Skin &$skin)
 	{
 		$out->addModules('pleesher');
-		$out->addModules('pleesher.notifications');
 
-		// using $out->addModules('toastr') fails, for some reason
-		$out->addModuleScripts('toastr');
-		$out->addModuleStyles('toastr');
+		if ($out->getUser()->isLoggedIn())
+		{
+			$out->addModules('pleesher.notifications');
+
+			// using $out->addModules('toastr') fails, for some reason
+			$out->addModuleScripts('toastr');
+			$out->addModuleStyles('toastr');
+		}
 	}
 
 	/**
