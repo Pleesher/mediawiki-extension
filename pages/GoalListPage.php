@@ -16,7 +16,7 @@ class Pleesher_GoalListPage extends SpecialPage
 		$user = $this->getUser();
 		$user_id = $user->getId();
 		$goals = PleesherExtension::getGoals(['user_id' => $user_id > 0 ? $user_id : null]);
-		$user_merge_url = $user_id > 0 ? PleesherExtension::$pleesher->getUserMergeUrl($user_id) : null;
+		$user_merge_url = null;
 
 		foreach ($goals as $goal)
 		{
