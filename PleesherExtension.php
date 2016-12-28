@@ -401,7 +401,8 @@ class PleesherExtension
 			$advancements[$goal->id] = (float)$goal->progress->current / $goal->progress->target;
 
 		uasort($goals, function($goal1, $goal2) use($advancements) {
-			return $advancements[$goal2->id] - $advancements[$goal1->id];
+			$diff = $advancements[$goal2->id] - $advancements[$goal1->id];
+			return $diff < 0 ? -1 : ($diff > 0 ? 1 : 0);
 		});
 
 		if (isset($max))
