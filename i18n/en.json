@@ -6,6 +6,7 @@
 	},
 	"pleesher-desc": "Game-like achievements for your wiki",
 	"achievements": "Achievements",
+	"achievementdetails": "Achievement Details",
 	"achievementsadmin": "Admin Panel",
 	"achievementserror": "Error retrieving achievements",
 	"userranking": "User Ranking",
