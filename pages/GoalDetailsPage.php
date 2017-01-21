@@ -9,7 +9,7 @@ class Pleesher_GoalDetailsPage extends SpecialPage
 	public function execute($subPage)
 	{
 		if (empty($subPage))
-			return $this->getOutput()->redirect($view_helper->pageUrl('Special:Achievements'));
+			return $this->getOutput()->redirect(PleesherExtension::$view_helper->pageUrl('Special:Achievements'));
 
 		$this->setHeaders();
 		$this->checkPermissions();
