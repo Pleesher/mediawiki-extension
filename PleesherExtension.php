@@ -7,6 +7,8 @@ use Pleesher\Client\Exception\Exception;
 
 class PleesherExtension
 {
+	const ADMIN_RIGHT = 'pleesher-admin';
+
 	/**
 	 * @var \Pleesher\Client\Client
 	 */
@@ -132,6 +134,7 @@ class PleesherExtension
 						return null;
 					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
 					$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
+					$user = PleesherExtension::getUser($user_id);	// Refetching the user as the retrieving of achievements could have updated his/her Kudos
 					$goal_count = count(self::$goal_data);
 
 					if (!empty($text))
@@ -254,7 +257,14 @@ class PleesherExtension
 		foreach ($achievements as $achievement)
 			$achievement->showcased = !empty($showcased_goal_ids[$achievement->id]);
 
-		$actions = is_object($GLOBALS['wgUser']) && $user_id == $GLOBALS['wgUser']->getId() ? ['showcase'] : [];
+		$actions = [];
+		if (is_object($GLOBALS['wgUser']))
+		{
+			if ($GLOBALS['wgUser']->getId() == $user_id)
+				$actions[] = 'showcase';
+			if ($GLOBALS['wgUser']->isAllowed(PleesherExtension::ADMIN_RIGHT))
+				$actions[] = 'revoke';
+		}
 
 		return self::render('goals', [
 			'user' => $user,
