@@ -13,6 +13,5 @@ class Pleesher_MarkNotificationsReadAction extends ApiBase
 		$result = PleesherExtension::$pleesher->markNotificationsRead($this->getUser()->getId(), $event_ids);
 
 		$this->getResult()->addValue(null, 'success', $result ? 1 : 0);
-		return true;
 	}
 }

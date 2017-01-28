@@ -20,7 +20,7 @@ class Pleesher_ShowcaseAchievementAction extends ApiBase
 		if (!$remove && !in_array($goal_id, array_keys($achievements)))
 		{
 			$this->getResult()->addValue(null, 'success', 0);
-			return false;
+			return;
 		}
 
 		$result = $remove
@@ -28,6 +28,5 @@ class Pleesher_ShowcaseAchievementAction extends ApiBase
 			: PleesherExtension::$pleesher->setObjectData('goal', $goal_id, $this->getUser()->getId(), 'showcased', true);
 
 		$this->getResult()->addValue(null, 'success', $result ? 1 : 0);
-		return true;
 	}
 }
