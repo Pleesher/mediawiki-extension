@@ -6,6 +6,10 @@ class Pleesher_GoalListPage extends SpecialPage
 		parent::__construct('Achievements');
 	}
 
+	function getGroupName() {
+		return 'pleesher';
+	}
+
 	public function execute($subPage)
 	{
 		$this->setHeaders();
