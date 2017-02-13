@@ -6,12 +6,19 @@
 	},
 	"pleesher-desc": "Game-like achievements for your wiki",
 	"achievements": "Achievements",
+	"achievementdetails": "Achievement Details",
 	"achievementsadmin": "Admin Panel",
+	"achievementserror": "Error retrieving achievements",
 	"userranking": "User Ranking",
 	
 	"pleesher.achievement_unlocked": "Achievement unlocked!",
+	"pleesher.revoke_achievement.confirm": "Are you sure you want to revoke this achievement? User will no longer be able to unlock it in the future.",
 		
 	"pleesher.goal_details.title": "$1 - Achievement Details",
 	"pleesher.goal.description.title": "Details",
-	"pleesher.goal.achievers.title": "Achievers"
+	"pleesher.goal.achievers.title": "Achievers",
+		
+	"pleesher.error.title": "Error",
+	"pleesher.error.text.generic": "Achievement data could not be retrieved.",
+	"pleesher.error.text.no_such_goal": "Goal '$1' could not be found"
 }

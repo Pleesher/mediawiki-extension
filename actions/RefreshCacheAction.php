@@ -11,8 +11,14 @@ class Pleesher_RefreshCacheAction extends ApiBase
 
 	public function execute()
 	{
+		if (!$this->getUser()->isAllowed(PleesherExtension::ADMIN_RIGHT))
+		{
+			$this->getResult()->addValue(null, 'success', 0);
+			return;
+		}
+
 		// FIXME: handle non-global cache refresh
-		// FIXME: check and shit
+		// FIXME: check parameters
 		$user_id = $this->getParameter('user_id');
 		$refresh_type = $this->getParameter('refresh');
 
@@ -35,6 +41,5 @@ class Pleesher_RefreshCacheAction extends ApiBase
 			PleesherExtension::$pleesher->refreshCacheGlobally($keys);
 
 		$this->getResult()->addValue(null, 'success', 1);
-		return true;
 	}
 }

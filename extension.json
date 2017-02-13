@@ -22,12 +22,14 @@
 		"PleesherExtension": "PleesherExtension.php",
 		"PleesherImplementation": "PleesherImplementation.php",
 		"Pleesher_AdminPage": "pages/AdminPage.php",
+		"Pleesher_ErrorPage": "pages/Error.php",
 		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
 		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
 		"Pleesher_GoalListPage": "pages/GoalListPage.php",
 		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
 		"Pleesher_RefreshCacheAction": "actions/RefreshCacheAction.php",
 		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
+		"Pleesher_ShowcaseAchievementAction": "actions/ShowcaseAchievementAction.php",
 		"Pleesher_UserRankingPage": "pages/UserRankingPage.php",
 		"Pleesher_ViewHelper": "ViewHelper.php"
 	},
@@ -49,7 +51,8 @@
 		"pleesher.mark_notifications_read": "Pleesher_MarkNotificationsReadAction",
 		"pleesher.notifications": "Pleesher_GetNotificationsAction",
 		"pleesher.refresh_cache": "Pleesher_RefreshCacheAction",
-		"pleesher.revoke_achievement": "Pleesher_RevokeAchievementAction"
+		"pleesher.revoke_achievement": "Pleesher_RevokeAchievementAction",
+		"pleesher.showcase_achievement": "Pleesher_ShowcaseAchievementAction"
 	},
 	"ResourceModules": {
 		"pleesher": {
@@ -82,6 +85,7 @@
 		"remoteExtPath": "PleesherExtension"
 	},
 	"SpecialPages": {
+		"AchievementsError": "Pleesher_ErrorPage",
 		"Achievements": "Pleesher_GoalListPage",
 		"AchievementDetails": "Pleesher_GoalDetailsPage",
 		"UserRanking": "Pleesher_UserRankingPage",

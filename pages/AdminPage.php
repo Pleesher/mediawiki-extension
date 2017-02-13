@@ -3,7 +3,7 @@ class Pleesher_AdminPage extends SpecialPage
 {
 	public function __construct()
 	{
-		parent::__construct('AchievementsAdmin');
+		parent::__construct('AchievementsAdmin', PleesherExtension::ADMIN_RIGHT);
 	}
 
 	public function execute($subPage)
