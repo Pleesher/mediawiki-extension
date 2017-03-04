@@ -170,6 +170,13 @@ class PleesherExtension
 		}
 	}
 
+	public static function extensionTypes(array &$extensionTypes)
+	{
+		$extensionTypes['pleesher'] = wfMessage( 'version-pleesher' )->text();
+
+		return true;
+	}
+
 	/**
 	 * Displays a Pleesher goal
 	 * @return string A HTML template of it

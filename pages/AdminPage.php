@@ -6,6 +6,10 @@ class Pleesher_AdminPage extends SpecialPage
 		parent::__construct('AchievementsAdmin', PleesherExtension::ADMIN_RIGHT);
 	}
 
+	function getGroupName() {
+		return 'pleesher';
+	}
+
 	public function execute($subPage)
 	{
 		$this->setHeaders();

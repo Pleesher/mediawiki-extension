@@ -6,6 +6,10 @@ class Pleesher_UserRankingPage extends SpecialPage
 		parent::__construct('UserRanking');
 	}
 
+	function getGroupName() {
+		return 'pleesher';
+	}
+
 	public function execute($subPage)
 	{
 		$this->setHeaders();
