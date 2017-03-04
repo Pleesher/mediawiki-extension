@@ -134,7 +134,6 @@ class PleesherExtension
 						return null;
 					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
 					$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
-					$user = PleesherExtension::getUser($user_id);	// Refetching the user as the retrieving of achievements could have updated his/her Kudos
 					$goal_count = count(self::$goal_data);
 
 					if (!empty($text))
