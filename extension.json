@@ -23,6 +23,7 @@
 		"PleesherExtension": "PleesherExtension.php",
 		"PleesherImplementation": "PleesherImplementation.php",
 		"Pleesher_AdminPage": "pages/AdminPage.php",
+		"Pleesher_CheckAchievementsAction": "actions/CheckAchievementsAction.php",
 		"Pleesher_ErrorPage": "pages/Error.php",
 		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
 		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
@@ -52,6 +53,7 @@
 		]
 	},
 	"APIModules": {
+		"pleesher.check_achievements": "Pleesher_CheckAchievementsAction",
 		"pleesher.mark_notifications_read": "Pleesher_MarkNotificationsReadAction",
 		"pleesher.notifications": "Pleesher_GetNotificationsAction",
 		"pleesher.refresh_cache": "Pleesher_RefreshCacheAction",

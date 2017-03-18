@@ -165,9 +165,8 @@ class PleesherExtension
 	 */
 	public static function pageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 	{
-		if ($user->isLoggedIn()) {
-			self::$pleesher->checkAchievements($user->getId());
-		}
+		if ($user->isLoggedIn())
+			self::$pleesher->checkAchievementsLater($user->getId());
 	}
 
 	public static function extensionTypes(array &$extensionTypes)
