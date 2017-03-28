@@ -367,12 +367,14 @@ class PleesherExtension
 
 	public static function getShowcasedAchievements($user_id)
 	{
+		$achieved_goals = self::$pleesher->getAchievements($user_id);
+
 		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
 		$showcased_goals = [];
 		foreach ($showcased_goal_ids as $goal_id => $showcased)
 		{
-			if ($showcased && is_object($goal = self::getGoal($goal_id)))
-				$showcased_goals[] = $goal;
+			if ($showcased && isset($achieved_goals[$goal_id]))
+				$showcased_goals[] = $achieved_goals[$goal_id];
 		}
 
 		return $showcased_goals;
