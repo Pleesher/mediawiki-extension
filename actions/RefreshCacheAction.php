@@ -25,7 +25,10 @@ class Pleesher_RefreshCacheAction extends ApiBase
 		switch ($refresh_type)
 		{
 			case 'goals':
-				$keys = ['goal', 'goal_relative_to_user'];
+				$keys = ['goal'];
+				break;
+			case 'achievements':
+				$keys = ['goal_relative_to_user'];
 				break;
 			case 'users':
 				$keys = ['user'];
