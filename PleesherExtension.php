@@ -97,7 +97,9 @@ class PleesherExtension
 	 */
 	public static function beforePageDisplay(OutputPage &$out, Skin &$skin)
 	{
-		$out->addModules('pleesher');
+		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
+		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
+		$out->addInlineScript(file_get_contents(__DIR__ . '/resources/js/pleesher.js'));
 
 		if ($out->getUser()->isLoggedIn())
 		{
@@ -134,7 +136,6 @@ class PleesherExtension
 						return null;
 					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
 					$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
-					$user = PleesherExtension::getUser($user_id);	// Refetching the user as the retrieving of achievements could have updated his/her Kudos
 					$goal_count = count(self::$goal_data);
 
 					if (!empty($text))
@@ -166,9 +167,8 @@ class PleesherExtension
 	 */
 	public static function pageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 	{
-		if ($user->isLoggedIn()) {
-			self::$pleesher->checkAchievements($user->getId());
-		}
+		if ($user->isLoggedIn())
+			self::$pleesher->checkAchievementsLater($user->getId());
 	}
 
 	public static function extensionTypes(array &$extensionTypes)
@@ -369,12 +369,14 @@ class PleesherExtension
 
 	public static function getShowcasedAchievements($user_id)
 	{
+		$achieved_goals = self::$pleesher->getAchievements($user_id);
+
 		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
 		$showcased_goals = [];
 		foreach ($showcased_goal_ids as $goal_id => $showcased)
 		{
-			if ($showcased && is_object($goal = self::getGoal($goal_id)))
-				$showcased_goals[] = $goal;
+			if ($showcased && isset($achieved_goals[$goal_id]))
+				$showcased_goals[] = $achieved_goals[$goal_id];
 		}
 
 		return $showcased_goals;
