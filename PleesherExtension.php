@@ -121,9 +121,12 @@ class PleesherExtension
 
 		if ($title->getNamespace() == NS_USER)
 		{
-			$article = WikiPage::factory($title);
+			$wikipage = WikiPage::factory($title);
+			$revision = $wikipage->getRevision();
+			$content = $revision->getContent(Revision::FOR_PUBLIC);
+			$contenttext = ContentHandler::getContentText($content);
 
-			if ($article->getText(Revision::FOR_PUBLIC) == $text)
+			if ($contenttext == $text)
 			{
 				self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
 
