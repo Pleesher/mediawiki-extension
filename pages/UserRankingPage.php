@@ -17,9 +17,6 @@ class Pleesher_UserRankingPage extends SpecialPage
 		$this->checkReadOnly();
 		$this->outputHeader();
 
-		$user = $this->getUser();
-		$user_id = $user->getId();
-
 		$users = PleesherExtension::getUsers();
 
 		$users = array_filter($users, function(User $user) {
