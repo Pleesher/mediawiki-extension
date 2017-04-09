@@ -34,14 +34,23 @@ class Pleesher_RefreshCacheAction extends ApiBase
 				$keys = ['user'];
 				break;
 			case 'all':
-			default:
 				$keys = null;
+				break;
+			default:
+				$this->getResult()->addValue(null, 'success', 0);
+				return;
 		}
 
 		if (isset($user_id))
 			PleesherExtension::$pleesher->refreshCache($user_id, $keys);
 		else
 			PleesherExtension::$pleesher->refreshCacheGlobally($keys);
+
+		if (is_null($keys) || in_array('goal_relative_to_user', $keys))
+		{
+			foreach (PleesherExtension::getUsers() as $user)
+				PleesherExtension::$pleesher->getAchievements($user->getId());
+		}
 
 		$this->getResult()->addValue(null, 'success', 1);
 	}
