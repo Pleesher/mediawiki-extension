@@ -16,7 +16,9 @@ $(function() {
 		
 		var redirectUrl = $(this).data('redirect');
 		
+		$(this).addClass('pleesher-loading');
 		$.get($(this).prop('href')).done(function(result) {
+			$(this).removeClass('pleesher-loading');
 			if (redirectUrl == 'self') {
 				window.location.reload();
 			}
