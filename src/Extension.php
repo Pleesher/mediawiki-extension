@@ -482,6 +482,16 @@ class PleesherExtension
 		return array_map([self::$implementation, 'fillGoal'], $goals);
 	}
 
+	public static function isDisabled()
+	{
+		static $disabled = null;
+
+		if (is_null($disabled))
+			$disabled = self::getSettingValue('disabled', '0') == '1';
+
+		return $disabled;
+	}
+
 	public static function render($view_path, array $params = [])
 	{
 		extract($params);
