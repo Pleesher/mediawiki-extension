@@ -9,6 +9,7 @@
 	"achievementdetails": "Achievement Details",
 	"achievementsadmin": "Admin Panel",
 	"achievementserror": "Error retrieving achievements",
+	"achievementsdisabled" : "Maintenance in progress",
 	"userranking": "User Ranking",
 	
 	"pleesher.achievement_unlocked": "Achievement unlocked!",
@@ -21,6 +22,8 @@
 	"pleesher.error.title": "Error",
 	"pleesher.error.text.generic": "Achievement data could not be retrieved.",
 	"pleesher.error.text.no_such_goal": "Goal '$1' could not be found",
+	
+	"pleesher.disabled": "Achievements have been temporarily disabled. Please try again in a while.",
 	
 	"specialpages-group-pleesher": "Pleesher",
 	"version-pleesher": "Pleesher"

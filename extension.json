@@ -20,17 +20,21 @@
 		]
 	},
 	"AutoloadClasses": {
-		"PleesherExtension": "PleesherExtension.php",
-		"PleesherImplementation": "PleesherImplementation.php",
+		"PleesherClient": "src/Client.php",
+		"PleesherExtension": "src/Extension.php",
+		"PleesherImplementation": "src/Implementation.php",
+		"PleesherDisabledException" : "src/DisabledException.php",
 		"Pleesher_AdminPage": "pages/AdminPage.php",
 		"Pleesher_CheckAchievementsAction": "actions/CheckAchievementsAction.php",
-		"Pleesher_ErrorPage": "pages/Error.php",
+		"Pleesher_DisabledPage": "pages/DisabledPage.php",
+		"Pleesher_ErrorPage": "pages/ErrorPage.php",
 		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
 		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
 		"Pleesher_GoalListPage": "pages/GoalListPage.php",
 		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
 		"Pleesher_RefreshCacheAction": "actions/RefreshCacheAction.php",
 		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
+		"Pleesher_SetSettingAction": "actions/SetSettingAction.php",
 		"Pleesher_ShowcaseAchievementAction": "actions/ShowcaseAchievementAction.php",
 		"Pleesher_UserRankingPage": "pages/UserRankingPage.php",
 		"Pleesher_ViewHelper": "ViewHelper.php"
@@ -58,6 +62,7 @@
 		"pleesher.notifications": "Pleesher_GetNotificationsAction",
 		"pleesher.refresh_cache": "Pleesher_RefreshCacheAction",
 		"pleesher.revoke_achievement": "Pleesher_RevokeAchievementAction",
+		"pleesher.set_setting": "Pleesher_SetSettingAction",
 		"pleesher.showcase_achievement": "Pleesher_ShowcaseAchievementAction"
 	},
 	"ResourceModules": {
@@ -91,11 +96,12 @@
 		"remoteExtPath": "PleesherExtension"
 	},
 	"SpecialPages": {
-		"AchievementsError": "Pleesher_ErrorPage",
 		"Achievements": "Pleesher_GoalListPage",
 		"AchievementDetails": "Pleesher_GoalDetailsPage",
-		"UserRanking": "Pleesher_UserRankingPage",
-		"AchievementsAdmin": "Pleesher_AdminPage" 
+		"AchievementsDisabled": "Pleesher_DisabledPage",
+		"AchievementsError": "Pleesher_ErrorPage",
+		"AchievementsAdmin": "Pleesher_AdminPage",
+		"UserRanking": "Pleesher_UserRankingPage"
 	},
 	"AvailableRights": [
 		"pleesher-admin"
