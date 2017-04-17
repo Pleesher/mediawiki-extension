@@ -17,7 +17,9 @@ class Pleesher_AdminPage extends SpecialPage
 		$this->checkReadOnly();
 		$this->outputHeader();
 
-		$html = PleesherExtension::render('admin');
+		$pleesher_disabled = PleesherExtension::getSettingValue('disabled', '0') == '1';
+
+		$html = PleesherExtension::render('admin', ['pleesher_disabled' => $pleesher_disabled]);
 		$this->getOutput()->addHTML($html);
 	}
 }

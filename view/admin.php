@@ -1,3 +1,16 @@
+<?php if ($pleesher_disabled): ?>
+<h3>Achievements currently disabled</h3>
+
+<div class="pleesher-admin-block">
+	<p class="pleesher-admin-block-title pleesher-admin-block-title-good"
+		><a data-redirect="self" data-confirm="Are you sure this is required?"
+		href="<?php echo $h->actionUrl('pleesher.set_setting', ['key' => 'disabled', 'value' => 0]) ?>"
+		>Re-enable Achievements</a></p>
+	<p><strong>Use this to enable Pleesher's achievements functionality back.</strong></p>
+</div>
+
+<?php else: ?>
+
 <h3>General</h3>
 
 <div class="pleesher-admin-block">
@@ -48,3 +61,12 @@
 
 	<p><strong>Use with caution: this will compute everything from scratch for every user, and will take quite some time.</strong></p>
 </div>
+
+<div class="pleesher-admin-block">
+	<p class="pleesher-admin-block-title pleesher-admin-block-title-bad"
+		><a data-redirect="self" data-confirm="Are you sure this is required?"
+		href="<?php echo $h->actionUrl('pleesher.set_setting', ['key' => 'disabled', 'value' => 1]) ?>"
+		>Disable Achievements</a></p>
+	<p><strong>Use this to temporarily disable Pleesher's achievements functionality.</strong></p>
+</div>
+<?php endif ?>
