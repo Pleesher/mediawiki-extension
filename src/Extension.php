@@ -161,46 +161,50 @@ class PleesherExtension
 		{
 			$wikipage = WikiPage::factory($title);
 			$revision = $wikipage->getRevision();
-			$content = $revision->getContent(Revision::FOR_PUBLIC);
-			$contenttext = ContentHandler::getContentText($content);
 
-			if ($contenttext == $text)
+			if (is_object($revision))
 			{
-				self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
+				$content = $revision->getContent(Revision::FOR_PUBLIC);
+				$contenttext = ContentHandler::getContentText($content);
 
-				try {
-					$user_id = User::idFromName($title->getText());
-					if (is_null($user_id))
-						return null;
-					$user = PleesherExtension::getUser($user_id);
-					if (!is_object($user))
-						return null;
-					$achievement_count = count(self::getAchievements($user_id)) ?: 0;
-					$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
-					$goal_count = count(self::$goal_data);
+				if ($contenttext == $text)
+				{
+					self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
 
-					if (!empty($text))
-						$text .= PHP_EOL . PHP_EOL;
+					try {
+						$user_id = User::idFromName($title->getText());
+						if (is_null($user_id))
+							return null;
+						$user = PleesherExtension::getUser($user_id);
+						if (!is_object($user))
+							return null;
+						$achievement_count = count(self::getAchievements($user_id)) ?: 0;
+						$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
+						$goal_count = count(self::$goal_data);
 
-					$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
-						'user' => $user,
-						'closest_achievements' => self::getClosestAchievements($user->getId(), 3),
-						'achievement_count' => $achievement_count,
-						'showcased_achievement_count' => $showcased_achievement_count,
-						'goal_count' => $goal_count
-					]));
+						if (!empty($text))
+							$text .= PHP_EOL . PHP_EOL;
 
-				} catch (Exception $e) {
-					if (!empty($text))
-						$text .= PHP_EOL . PHP_EOL;
+						$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
+							'user' => $user,
+							'closest_achievements' => self::getClosestAchievements($user->getId(), 3),
+							'achievement_count' => $achievement_count,
+							'showcased_achievement_count' => $showcased_achievement_count,
+							'goal_count' => $goal_count
+						]));
 
-					if ($e instanceof PleesherDisabledException)
-						$text .= self::render('disabled');
-					else
-						$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
+					} catch (Exception $e) {
+						if (!empty($text))
+							$text .= PHP_EOL . PHP_EOL;
+
+						if ($e instanceof PleesherDisabledException)
+							$text .= self::render('disabled');
+						else
+							$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
+					}
+
+					self::$pleesher->restoreExceptionHandler();
 				}
-
-				self::$pleesher->restoreExceptionHandler();
 			}
 		}
 
