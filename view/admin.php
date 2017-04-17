@@ -13,9 +13,10 @@
 
 <h3>General</h3>
 
+<?php // FIXME: the following block should be in the LP-specific extension ?>
 <div class="pleesher-admin-block">
 	<p class="pleesher-admin-block-title"
-		><a target="_blank" href="http://test.develop.pleesher.com/Liquipedia"
+		><a target="_blank" href="https://pleesher.com/Liquipedia"
 		>Manage Liquipedia Goals</a> - Ask PoP for website account's username/password
 	<p>Use this to add or remove goals.</p>
 	<p>Checker functions needs to be added to this wiki before new goals become available. See with PoP or fo-nttax.
