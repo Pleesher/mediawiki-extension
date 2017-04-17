@@ -13,7 +13,7 @@
 
 	<?php echo htmlspecialchars($goal->short_description) ?>
 
-	<?php if (isset($user) && $goal->achieved && in_array('revoke', $actions)): ?>
+	<?php if (isset($user) && $goal->achieved && in_array('revoke', $actions) && !PleesherExtension::isDisabled()): ?>
 	<a data-redirect="self" href="<?php echo $h->actionUrl('pleesher.revoke_achievement', ['user_id' => $user->getId(), 'goal_id' => $goal->id, 'duration' => 'forever']) ?>"
 		data-confirm="<?php echo $h->text('pleesher.revoke_achievement.confirm') ?>">Revoke</a>
 	<?php endif ?>
