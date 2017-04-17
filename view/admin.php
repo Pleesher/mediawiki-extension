@@ -3,7 +3,7 @@
 
 <div class="pleesher-admin-block">
 	<p class="pleesher-admin-block-title pleesher-admin-block-title-good"
-		><a data-redirect="self" data-confirm="Are you sure this is required?"
+		><a data-redirect="self" data-confirm="Are you sure?"
 		href="<?php echo $h->actionUrl('pleesher.set_setting', ['key' => 'disabled', 'value' => 0]) ?>"
 		>Re-enable Achievements</a></p>
 	<p><strong>Use this to enable Pleesher's achievements functionality back.</strong></p>
@@ -58,7 +58,6 @@
 		href="<?php echo $h->actionUrl('pleesher.refresh_cache', ['refresh' => 'all']) ?>"
 		>Refresh whole cache</a></p>
 	<p>Use this to remove all cache and fetch/check everything again.</p>
-
 	<p><strong>Use with caution: this will compute everything from scratch for every user, and will take quite some time.</strong></p>
 </div>
 
@@ -67,6 +66,8 @@
 		><a data-redirect="self" data-confirm="Are you sure this is required?"
 		href="<?php echo $h->actionUrl('pleesher.set_setting', ['key' => 'disabled', 'value' => 1]) ?>"
 		>Disable Achievements</a></p>
-	<p><strong>Use this to temporarily disable Pleesher's achievements functionality.</strong></p>
+	<p>Use this to temporarily disable Pleesher's achievements functionality.</p>
+
+	<p>Everything will still be available read-only (from cache)</p>
 </div>
 <?php endif ?>
