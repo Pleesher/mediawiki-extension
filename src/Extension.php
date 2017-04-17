@@ -139,7 +139,7 @@ class PleesherExtension
 		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
 		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher.js'));
 
-		if ($out->getUser()->isLoggedIn())
+		if (!self::isDisabled() && $out->getUser()->isLoggedIn())
 		{
 			$out->addModules('pleesher.notifications');
 
