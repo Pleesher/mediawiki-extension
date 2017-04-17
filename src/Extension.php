@@ -1,5 +1,4 @@
 <?php
-use Pleesher\Client\Client;
 use Pleesher\Client\Cache\LocalStorage;
 use Pleesher\Client\Cache\DatabaseStorage;
 use MediaWiki\Auth\AuthManager;
@@ -21,13 +20,46 @@ class PleesherExtension
 
 	/**
 	 * Retrieve an extension's configuration value.
-	 * @param $key A config key
+	 * @param string $key A config key
 	 * @param string $default A value to return if the requested config value doesn't exist
 	 * @return string|null The config value or $default
 	 */
 	public static function getConfigValue($key, $default = null)
 	{
 		return isset($GLOBALS['wg' . get_called_class() . $key]) ? $GLOBALS['wg' . get_called_class() . $key] : $default;
+	}
+
+	/**
+	 * Retrieve a Pleesher extension's setting value
+	 * @param string $key A setting key
+	 * @param string $default A value to return if the requested setting value doesn't exist
+	 * @return string|null The setting value or $default
+	 */
+	public static function getSettingValue($key, $default = null)
+	{
+		$sql = 'SELECT value FROM pleesher_setting WHERE `key` = :key';
+		$params = array(':key' => $key);
+
+		$query = self::$pdo->prepare($sql);
+		$query->execute($params);
+		$result = $query->fetch(\PDO::FETCH_COLUMN);
+
+		return $result;
+	}
+
+	/**
+	 * Set a Pleesher extension's setting value
+	 * @param string $key A setting key
+	 * @param string $value The value to set this setting to
+	 */
+	public static function setSettingValue($key, $value)
+	{
+		$sql = 'REPLACE INTO pleesher_setting (`key`, `value`) VALUES (:key, :value)';
+		$params = array(':key' => $key, ':value' => $value);
+
+		$query = self::$pdo->prepare($sql);
+
+		return $query->execute($params);
 	}
 
 	/**
@@ -48,8 +80,8 @@ class PleesherExtension
 		if (!isset(self::$implementation))
 			throw new \Exception('PleesherExtension::setImplementation must be called before PleesherExtension is loaded');
 
-		require_once __DIR__ . '/vendor/autoload.php';
-		self::$pleesher = new Client($GLOBALS['wgPleesherClientId'], $GLOBALS['wgPleesherClientSecret']);
+		require_once __DIR__ . '/../vendor/autoload.php';
+		self::$pleesher = new PleesherClient($GLOBALS['wgPleesherClientId'], $GLOBALS['wgPleesherClientSecret']);
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -58,6 +90,12 @@ class PleesherExtension
 		self::$view_helper = new Pleesher_ViewHelper(self::$implementation->getI18nPrefix());
 
 		self::$pleesher->setExceptionHandler(function(Exception $e) {
+			if ($e instanceof PleesherDisabledException)
+			{
+				header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsDisabled', true));
+				die;
+			}
+
 			$_SESSION[__CLASS__]['exception'] = $e;
 			header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
 			die;
@@ -99,7 +137,7 @@ class PleesherExtension
 	{
 		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
 		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
-		$out->addInlineScript(file_get_contents(__DIR__ . '/resources/js/pleesher.js'));
+		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher.js'));
 
 		if ($out->getUser()->isLoggedIn())
 		{
@@ -155,7 +193,11 @@ class PleesherExtension
 				} catch (Exception $e) {
 					if (!empty($text))
 						$text .= PHP_EOL . PHP_EOL;
-					$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
+
+					if ($e instanceof PleesherDisabledException)
+						$text .= self::render('disabled');
+					else
+						$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
 				}
 
 				self::$pleesher->restoreExceptionHandler();
@@ -292,7 +334,7 @@ class PleesherExtension
 		$max_age = isset($args['max_age']) ? $args['max_age'] : 30;
 		$max_entries = isset($args['max_entries']) ? $args['max_entries'] : null;
 
-		$achievements = self::getParticipations(['status' => Client::PARTICIPATION_STATUS_ACHIEVED, 'max_age' => $max_age]);
+		$achievements = self::getParticipations(['status' => PleesherClient::PARTICIPATION_STATUS_ACHIEVED, 'max_age' => $max_age]);
 		uasort($achievements, function($achievement1, $achievement2) {
 			return $achievement2->datetime->getTimestamp() - $achievement1->datetime->getTimestamp();
 		});
@@ -471,6 +513,6 @@ class PleesherExtension
 				return $implementation_path;
 		}
 
-		return __DIR__ . '/view/' . $view_path . '.php';
+		return __DIR__ . '/../view/' . $view_path . '.php';
 	}
 }
