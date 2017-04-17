@@ -68,6 +68,6 @@
 		>Disable Achievements</a></p>
 	<p>Use this to temporarily disable Pleesher's achievements functionality.</p>
 
-	<p>Everything will still be available read-only (from cache)</p>
+	<p>Some data will still be available read-only (from cache), when available</p>
 </div>
 <?php endif ?>
