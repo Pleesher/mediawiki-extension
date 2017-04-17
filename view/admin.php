@@ -5,8 +5,8 @@
 	<p class="pleesher-admin-block-title pleesher-admin-block-title-good"
 		><a data-redirect="self" data-confirm="Are you sure?"
 		href="<?php echo $h->actionUrl('pleesher.set_setting', ['key' => 'disabled', 'value' => 0]) ?>"
-		>Re-enable Achievements</a></p>
-	<p><strong>Use this to enable Pleesher's achievements functionality back.</strong></p>
+		>Re-enable achievements</a></p>
+	<p><strong>Use this to re-enable Pleesher's achievements functionality.</strong></p>
 </div>
 
 <?php else: ?>
@@ -65,7 +65,7 @@
 	<p class="pleesher-admin-block-title pleesher-admin-block-title-bad"
 		><a data-redirect="self" data-confirm="Are you sure this is required?"
 		href="<?php echo $h->actionUrl('pleesher.set_setting', ['key' => 'disabled', 'value' => 1]) ?>"
-		>Disable Achievements</a></p>
+		>Disable achievements</a></p>
 	<p>Use this to temporarily disable Pleesher's achievements functionality.</p>
 
 	<p>Some data will still be available read-only (from cache), when available.</p>
