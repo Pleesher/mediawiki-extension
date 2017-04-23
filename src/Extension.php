@@ -123,6 +123,9 @@ class PleesherExtension
 	 */
 	public static function initializeParser(Parser $parser)
 	{
+		if (!self::$implementation->isExtensionEnabled())
+			return;
+
 		$parser->setHook('Goal', 'PleesherExtension::viewGoal');
 		$parser->setHook('Showcase', 'PleesherExtension::viewShowcase');
 		$parser->setHook('AchievementList', 'PleesherExtension::viewAchievements');
@@ -135,6 +138,9 @@ class PleesherExtension
 	 */
 	public static function beforePageDisplay(OutputPage &$out, Skin &$skin)
 	{
+		if (!self::$implementation->isExtensionEnabled())
+			return;
+
 		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
 		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
 		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher.js'));
@@ -155,6 +161,9 @@ class PleesherExtension
 	 */
 	public static function parserBeforeStrip(&$parser, &$text, &$strip_state)
 	{
+		if (!self::$implementation->isExtensionEnabled())
+			return;
+
 		$title = $parser->getTitle();
 
 		if ($title->getNamespace() == NS_USER)
@@ -174,10 +183,10 @@ class PleesherExtension
 					try {
 						$user_id = User::idFromName($title->getText());
 						if (is_null($user_id))
-							return null;
+							return;
 						$user = PleesherExtension::getUser($user_id);
 						if (!is_object($user))
-							return null;
+							return;
 						$achievement_count = count(self::getAchievements($user_id)) ?: 0;
 						$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
 						$goal_count = count(self::$goal_data);
@@ -207,8 +216,6 @@ class PleesherExtension
 				}
 			}
 		}
-
-		return true;
 	}
 
 	/**
@@ -216,6 +223,9 @@ class PleesherExtension
 	 */
 	public static function pageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 	{
+		if (!self::$implementation->isExtensionEnabled())
+			return;
+
 		if ($user->isLoggedIn())
 			self::$pleesher->checkAchievementsLater($user->getId());
 	}

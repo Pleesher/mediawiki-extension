@@ -1,7 +1,13 @@
 <?php
 abstract class PleesherImplementation
 {
+	public function isExtensionEnabled(User $user = null)
+	{
+		return true;
+	}
+
 	public abstract function getGoalData();
+
 	public abstract function getI18nPrefix();
 
 	public function getGoalCategories()
