@@ -3,6 +3,12 @@ abstract class PleesherImplementation
 {
 	public function isExtensionEnabled(User $user = null)
 	{
+		if (is_null($user) && isset($GLOBALS['wgUser']))
+			$user = $GLOBALS['wgUser'];
+
+		if (isset($GLOBALS['wgPleesherAccessChecker']) && is_callable($GLOBALS['wgPleesherAccessChecker']))
+			return $GLOBALS['wgPleesherAccessChecker']($user);
+
 		return true;
 	}
 
