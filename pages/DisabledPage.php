@@ -1,5 +1,5 @@
 <?php
-class Pleesher_DisabledPage extends SpecialPage
+class Pleesher_DisabledPage extends Pleesher_SpecialPage
 {
 	public function __construct()
 	{

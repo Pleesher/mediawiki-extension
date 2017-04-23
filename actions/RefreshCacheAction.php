@@ -1,5 +1,5 @@
 <?php
-class Pleesher_RefreshCacheAction extends ApiBase
+class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 {
 	public function getAllowedParams()
 	{
@@ -9,14 +9,8 @@ class Pleesher_RefreshCacheAction extends ApiBase
 		]);
 	}
 
-	public function execute()
+	protected function doExecute()
 	{
-		if (!$this->getUser()->isAllowed(PleesherExtension::ADMIN_RIGHT))
-		{
-			$this->getResult()->addValue(null, 'success', 0);
-			return;
-		}
-
 		// FIXME: handle non-global cache refresh
 		// FIXME: check parameters
 		$user_id = $this->getParameter('user_id');

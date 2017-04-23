@@ -1,5 +1,5 @@
 <?php
-class Pleesher_RevokeAchievementAction extends ApiBase
+class Pleesher_RevokeAchievementAction extends Pleesher_AdminAction
 {
 	public function getAllowedParams()
 	{
@@ -10,14 +10,8 @@ class Pleesher_RevokeAchievementAction extends ApiBase
 		]);
 	}
 
-	public function execute()
+	protected function doExecute()
 	{
-		if (!$this->getUser()->isAllowed(PleesherExtension::ADMIN_RIGHT))
-		{
-			$this->getResult()->addValue(null, 'success', 0);
-			return;
-		}
-
 		// FIXME: check parameters
 		$user_id = (int)$this->getParameter('user_id');
 		$goal_id = (int)$this->getParameter('goal_id');

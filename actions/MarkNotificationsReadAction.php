@@ -1,12 +1,12 @@
 <?php
-class Pleesher_MarkNotificationsReadAction extends ApiBase
+class Pleesher_MarkNotificationsReadAction extends Pleesher_Action
 {
 	public function getAllowedParams()
 	{
 		return array_merge(parent::getAllowedParams(), ['event_ids' => []]);
 	}
 
-	public function execute()
+	protected function doExecute()
 	{
 		$event_ids = explode('|', $this->getParameter('event_ids'));
 		// FIXME: check result/error

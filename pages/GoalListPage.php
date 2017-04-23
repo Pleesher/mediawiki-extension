@@ -1,5 +1,5 @@
 <?php
-class Pleesher_GoalListPage extends SpecialPage
+class Pleesher_GoalListPage extends Pleesher_SpecialPage
 {
 	public function __construct()
 	{

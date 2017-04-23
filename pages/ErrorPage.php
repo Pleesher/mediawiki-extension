@@ -1,5 +1,5 @@
 <?php
-class Pleesher_ErrorPage extends SpecialPage
+class Pleesher_ErrorPage extends Pleesher_SpecialPage
 {
 	public function __construct()
 	{

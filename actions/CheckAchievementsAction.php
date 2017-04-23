@@ -1,7 +1,7 @@
 <?php
-class Pleesher_CheckAchievementsAction extends ApiBase
+class Pleesher_CheckAchievementsAction extends Pleesher_Action
 {
-	public function execute()
+	protected function doExecute()
 	{
 		PleesherExtension::$pleesher->checkAchievementsQueued($this->getUser()->getId());
 		$this->getResult()->addValue(null, 'success', 1);

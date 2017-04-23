@@ -1,5 +1,5 @@
 <?php
-class Pleesher_SetSettingAction extends ApiBase
+class Pleesher_SetSettingAction extends Pleesher_AdminAction
 {
 	public function getAllowedParams()
 	{
@@ -9,14 +9,8 @@ class Pleesher_SetSettingAction extends ApiBase
 		]);
 	}
 
-	public function execute()
+	protected function doExecute()
 	{
-		if (!$this->getUser()->isAllowed(PleesherExtension::ADMIN_RIGHT))
-		{
-			$this->getResult()->addValue(null, 'success', 0);
-			return;
-		}
-
 		$key = $this->getParameter('key');
 		$value = $this->getParameter('value');
 

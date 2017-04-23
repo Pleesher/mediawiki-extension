@@ -1,7 +1,7 @@
 <?php
-class Pleesher_GetNotificationsAction extends ApiBase
+class Pleesher_GetNotificationsAction extends Pleesher_Action
 {
-	public function execute()
+	protected function doExecute()
 	{
 		$pleesher_notifications = PleesherExtension::$pleesher->getNotifications($this->getUser()->getId());
 		$this->getResult()->addValue(null, 'notifications', $pleesher_notifications);

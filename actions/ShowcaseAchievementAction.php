@@ -1,5 +1,5 @@
 <?php
-class Pleesher_ShowcaseAchievementAction extends ApiBase
+class Pleesher_ShowcaseAchievementAction extends Pleesher_Action
 {
 	public function getAllowedParams()
 	{
@@ -10,13 +10,15 @@ class Pleesher_ShowcaseAchievementAction extends ApiBase
 		]);
 	}
 
-	public function execute()
+	protected function doExecute()
 	{
 		// FIXME: check value
 		$goal_id = (int)$this->getParameter('goal_id');
 
 		$achievements = PleesherExtension::getAchievements($this->getUser()->getId());
 		$remove = $this->getParameter('remove') == '1';
+
+		// FIXME: why no !isset($achievements[$goal_id]) simply??
 		if (!$remove && !in_array($goal_id, array_keys($achievements)))
 		{
 			$this->getResult()->addValue(null, 'success', 0);

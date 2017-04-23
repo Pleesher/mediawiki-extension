@@ -23,7 +23,9 @@
 		"PleesherClient": "src/Client.php",
 		"PleesherExtension": "src/Extension.php",
 		"PleesherImplementation": "src/Implementation.php",
-		"PleesherDisabledException" : "src/DisabledException.php",
+		"PleesherDisabledException": "src/DisabledException.php",
+		"Pleesher_Action": "actions/Action.php",
+		"Pleesher_AdminAction": "actions/AdminAction.php",
 		"Pleesher_AdminPage": "pages/AdminPage.php",
 		"Pleesher_CheckAchievementsAction": "actions/CheckAchievementsAction.php",
 		"Pleesher_DisabledPage": "pages/DisabledPage.php",
@@ -36,6 +38,7 @@
 		"Pleesher_RevokeAchievementAction": "actions/RevokeAchievementAction.php",
 		"Pleesher_SetSettingAction": "actions/SetSettingAction.php",
 		"Pleesher_ShowcaseAchievementAction": "actions/ShowcaseAchievementAction.php",
+		"Pleesher_SpecialPage": "pages/SpecialPage.php",
 		"Pleesher_UserRankingPage": "pages/UserRankingPage.php",
 		"Pleesher_ViewHelper": "ViewHelper.php"
 	},
