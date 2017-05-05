@@ -43,7 +43,7 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 		if (is_null($keys) || in_array('goal_relative_to_user', $keys))
 		{
 			foreach (PleesherExtension::getUsers() as $user)
-				PleesherExtension::$pleesher->getAchievements($user->getId());
+				PleesherExtension::$pleesher->getAchievements($user->getName());
 		}
 
 		$this->getResult()->addValue(null, 'success', 1);

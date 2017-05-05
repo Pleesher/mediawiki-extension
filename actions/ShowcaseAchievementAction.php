@@ -15,7 +15,7 @@ class Pleesher_ShowcaseAchievementAction extends Pleesher_Action
 		// FIXME: check value
 		$goal_id = (int)$this->getParameter('goal_id');
 
-		$achievements = PleesherExtension::getAchievements($this->getUser()->getId());
+		$achievements = PleesherExtension::getAchievements($this->getUser()->getName());
 		$remove = $this->getParameter('remove') == '1';
 
 		// FIXME: why no !isset($achievements[$goal_id]) simply??
@@ -26,8 +26,8 @@ class Pleesher_ShowcaseAchievementAction extends Pleesher_Action
 		}
 
 		$result = $remove
-			? PleesherExtension::$pleesher->deleteObjectData('goal', $goal_id, $this->getUser()->getId(), 'showcased')
-			: PleesherExtension::$pleesher->setObjectData('goal', $goal_id, $this->getUser()->getId(), 'showcased', true);
+			? PleesherExtension::$pleesher->deleteObjectData('goal', $goal_id, $this->getUser()->getName(), 'showcased')
+			: PleesherExtension::$pleesher->setObjectData('goal', $goal_id, $this->getUser()->getName(), 'showcased', true);
 
 		$this->getResult()->addValue(null, 'success', $result ? 1 : 0);
 	}

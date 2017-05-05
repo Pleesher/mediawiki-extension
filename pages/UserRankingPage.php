@@ -28,7 +28,7 @@ class Pleesher_UserRankingPage extends Pleesher_SpecialPage
 
 		$rank = 1;
 		$users = array_map(function($user) use(&$rank) {
-			$user->achievement_count = count(PleesherExtension::getAchievements($user->getId()));
+			$user->achievement_count = count(PleesherExtension::getAchievements($user->getName()));
 			$user->rank = $rank++;
 			return $user;
 		}, $users);

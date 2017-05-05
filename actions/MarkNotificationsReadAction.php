@@ -10,7 +10,7 @@ class Pleesher_MarkNotificationsReadAction extends Pleesher_Action
 	{
 		$event_ids = explode('|', $this->getParameter('event_ids'));
 		// FIXME: check result/error
-		$result = PleesherExtension::$pleesher->markNotificationsRead($this->getUser()->getId(), $event_ids);
+		$result = PleesherExtension::$pleesher->markNotificationsRead($this->getUser()->getName(), $event_ids);
 
 		$this->getResult()->addValue(null, 'success', $result ? 1 : 0);
 	}
