@@ -182,12 +182,13 @@ class PleesherExtension
 
 					try {
 						$user_name = $title->getText();
-						$user = PleesherExtension::getUser($user_name);
-						if (!is_object($user))
-							return;
 						$achievement_count = count(self::getAchievements($user_name)) ?: 0;
 						$showcased_achievement_count = count(self::getShowcasedAchievements($user_name));
 						$goal_count = count(self::$goal_data);
+
+						$user = PleesherExtension::getUser($user_name);
+						if (!is_object($user))
+							return;
 
 						if (!empty($text))
 							$text .= PHP_EOL . PHP_EOL;
