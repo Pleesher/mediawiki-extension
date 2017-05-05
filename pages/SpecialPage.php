@@ -10,6 +10,6 @@ abstract class Pleesher_SpecialPage extends SpecialPage
 
 	public function userCanExecute(User $user)
 	{
-		return PleesherExtension::$implementation->isExtensionEnabled($user);
+		return parent::userCanExecute($user) && PleesherExtension::$implementation->isExtensionEnabled($user);
 	}
 }
