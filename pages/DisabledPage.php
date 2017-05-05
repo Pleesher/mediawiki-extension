@@ -4,6 +4,7 @@ class Pleesher_DisabledPage extends Pleesher_SpecialPage
 	public function __construct()
 	{
 		parent::__construct('AchievementsDisabled');
+		$this->setListed(false);
 	}
 
 	public function execute($subPage)

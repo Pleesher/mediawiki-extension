@@ -4,6 +4,7 @@ class Pleesher_ErrorPage extends Pleesher_SpecialPage
 	public function __construct()
 	{
 		parent::__construct('AchievementsError');
+		$this->setListed(false);
 	}
 
 	public function execute($subPage)
