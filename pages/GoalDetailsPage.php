@@ -24,9 +24,9 @@ class Pleesher_GoalDetailsPage extends Pleesher_SpecialPage
 		$goal_code = $subPage;
 
 		$user = $this->getUser();
-		$user_id = $user->getId();
+		$user_name = $user->getName();
 
-		$goal = PleesherExtension::getGoal($goal_code, ['user_id' => $user_id > 0 ? $user_id : null]);
+		$goal = PleesherExtension::getGoal($goal_code, ['user_id' => $user->isLoggedIn() ? $user_name : null]);
 		if (!is_object($goal))
 		{
 			header('Location: ' . PleesherExtension::$view_helper->pageUrl('Special:AchievementsError', true));

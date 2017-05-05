@@ -181,14 +181,12 @@ class PleesherExtension
 					self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
 
 					try {
-						$user_id = User::idFromName($title->getText());
-						if (is_null($user_id))
-							return;
-						$user = PleesherExtension::getUser($user_id);
+						$user_name = $title->getText();
+						$user = PleesherExtension::getUser($user_name);
 						if (!is_object($user))
 							return;
-						$achievement_count = count(self::getAchievements($user_id)) ?: 0;
-						$showcased_achievement_count = count(self::getShowcasedAchievements($user_id));
+						$achievement_count = count(self::getAchievements($user_name)) ?: 0;
+						$showcased_achievement_count = count(self::getShowcasedAchievements($user_name));
 						$goal_count = count(self::$goal_data);
 
 						if (!empty($text))
@@ -196,7 +194,7 @@ class PleesherExtension
 
 						$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
 							'user' => $user,
-							'closest_achievements' => self::getClosestAchievements($user->getId(), 3),
+							'closest_achievements' => self::getClosestAchievements($user_name, 3),
 							'achievement_count' => $achievement_count,
 							'showcased_achievement_count' => $showcased_achievement_count,
 							'goal_count' => $goal_count
@@ -227,7 +225,7 @@ class PleesherExtension
 			return;
 
 		if ($user->isLoggedIn())
-			self::$pleesher->checkAchievementsLater($user->getId());
+			self::$pleesher->checkAchievementsLater($user->getName());
 	}
 
 	public static function extensionTypes(array &$extensionTypes)
@@ -245,9 +243,8 @@ class PleesherExtension
 	{
 		$goal_code = $args['code'];
 		$user_name = isset($args['perspective']) ? $args['perspective'] : null;
-		$user_id = !is_null($user_name) ? User::idFromName($user_name) : null;
 
-		$goal = self::getGoal($goal_code, ['user_id' => $user_id]);
+		$goal = self::getGoal($goal_code, ['user_id' => $user_name]);
 		if (!is_object($goal))
 			return '';
 
@@ -271,7 +268,7 @@ class PleesherExtension
 			return '';
 		}
 
-		$showcased_goals = self::getShowcasedAchievements($user_id);
+		$showcased_goals = self::getShowcasedAchievements($user_name);
 		$removable = is_object($GLOBALS['wgUser']) && $user_id == $GLOBALS['wgUser']->getId();
 
 		return self::render('showcase', [
@@ -295,7 +292,7 @@ class PleesherExtension
 			return 0;
 		}
 
-		$user = self::$pleesher->getUser($user_id);
+		$user = self::$pleesher->getUser($user_name);
 		return $user->kudos;
 	}
 
@@ -317,9 +314,9 @@ class PleesherExtension
 			return '';
 		}
 
-		$user = self::getUser($user_id);
-		$achievements = self::getAchievements($user_id);
-		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
+		$user = self::getUser($user_name);
+		$achievements = self::getAchievements($user_name);
+		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_name, 'showcased');
 		foreach ($achievements as $achievement)
 			$achievement->showcased = !empty($showcased_goal_ids[$achievement->id]);
 
@@ -381,10 +378,9 @@ class PleesherExtension
 		return array_map([self::$implementation, 'fillUser'], $users);
 	}
 
-	public static function getUser($user_id)
+	public static function getUser($user_name)
 	{
-		$pleesher_user = self::$pleesher->getUser($user_id);
-
+		$pleesher_user = self::$pleesher->getUser($user_name);
 		$wiki_user = self::pleesherUserToWikiUser($pleesher_user);
 		if (is_null($wiki_user))
 			return null;
@@ -416,9 +412,9 @@ class PleesherExtension
 		return self::$implementation->fillGoal($goal);
 	}
 
-	public static function getAchievements($user_id)
+	public static function getAchievements($user_name)
 	{
-		$achieved_goals = self::$pleesher->getAchievements($user_id);
+		$achieved_goals = self::$pleesher->getAchievements($user_name);
 		$achieved_goals = array_filter($achieved_goals, function($goal) {
 			return isset(self::$goal_data[$goal->code]);
 		});
@@ -426,11 +422,11 @@ class PleesherExtension
 		return array_map([self::$implementation, 'fillGoal'], $achieved_goals);
 	}
 
-	public static function getShowcasedAchievements($user_id)
+	public static function getShowcasedAchievements($user_name)
 	{
-		$achieved_goals = self::$pleesher->getAchievements($user_id);
+		$achieved_goals = self::$pleesher->getAchievements($user_name);
 
-		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_id, 'showcased');
+		$showcased_goal_ids = PleesherExtension::$pleesher->getObjectData('goal', null, $user_name, 'showcased');
 		$showcased_goals = [];
 		foreach ($showcased_goal_ids as $goal_id => $showcased)
 		{
@@ -473,9 +469,9 @@ class PleesherExtension
 		return array_map([self::$implementation, 'fillUser'], $achievers);
 	}
 
-	public static function getClosestAchievements($user_id, $max = null)
+	public static function getClosestAchievements($user_name, $max = null)
 	{
-		$goals = self::$pleesher->getGoals(['user_id' => $user_id]);
+		$goals = self::$pleesher->getGoals(['user_id' => $user_name]);
 
 		$goals = array_filter($goals, function($goal) {
 			return isset(self::$goal_data[$goal->code]) && !$goal->achieved && isset($goal->progress) && $goal->progress->current > 0;
@@ -519,10 +515,10 @@ class PleesherExtension
 
 	protected static function pleesherUserToWikiUser($pleesher_user)
 	{
-		$wiki_user = User::newFromId($pleesher_user->id);
-		if (!AuthManager::singleton()->userExists($wiki_user->getName()))
+		if (!AuthManager::singleton()->userExists($pleesher_user->id))
 			return null;
 
+		$wiki_user = User::newFromName($pleesher_user->id);
 		$wiki_user->kudos = $pleesher_user->kudos;
 
 		return $wiki_user;

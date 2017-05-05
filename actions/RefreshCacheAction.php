@@ -4,7 +4,7 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 	public function getAllowedParams()
 	{
 		return array_merge(parent::getAllowedParams(), [
-			'user_id' => null,
+			'user_name' => null,
 			'refresh' => null
 		]);
 	}
@@ -13,7 +13,7 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 	{
 		// FIXME: handle non-global cache refresh
 		// FIXME: check parameters
-		$user_id = $this->getParameter('user_id');
+		$user_name = $this->getParameter('user_name');
 		$refresh_type = $this->getParameter('refresh');
 
 		switch ($refresh_type)
@@ -35,8 +35,8 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 				return;
 		}
 
-		if (isset($user_id))
-			PleesherExtension::$pleesher->refreshCache($user_id, $keys);
+		if (isset($user_name))
+			PleesherExtension::$pleesher->refreshCache($user_name, $keys);
 		else
 			PleesherExtension::$pleesher->refreshCacheGlobally($keys);
 
