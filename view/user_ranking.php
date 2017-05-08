@@ -22,3 +22,5 @@
 		<?php endforeach ?>
 	</tbody>
 </table>
+
+<?php echo PleesherExtension::render('_pleesher_ad') ?>

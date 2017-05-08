@@ -16,3 +16,5 @@
 	<?php endforeach ?>
 </ul>
 <?php endif ?>
+
+<?php echo PleesherExtension::render('_pleesher_ad') ?>
