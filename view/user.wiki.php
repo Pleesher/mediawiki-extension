@@ -10,3 +10,5 @@
 <Goal code="<?php echo $goal->code ?>" perspective="<?php echo $user->getName() ?>" />
 <?php endforeach ?>
 <?php endif ?>
+
+<?php echo PleesherExtension::render('_pleesher_ad') ?>
