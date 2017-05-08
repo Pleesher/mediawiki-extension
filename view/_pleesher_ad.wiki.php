@@ -1,3 +1,3 @@
 <div class="pleesher-logo-wrapper">
-	[https://pleesher.com <i class="pleesher-logo"></i>Achievements provided by Pleesher]
+	[https://pleesher.com Achievements provided by <i class="pleesher-logo"></i>]
 </div>
