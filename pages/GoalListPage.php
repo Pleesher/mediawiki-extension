@@ -23,12 +23,12 @@ class Pleesher_GoalListPage extends Pleesher_SpecialPage
 		$goals = PleesherExtension::getGoals(['user_id' => $user->isLoggedIn() ? $user_name : null]);
 		$user_merge_url = null;
 
-		$goals_by_category = [];
 		foreach ($goals as $goal)
 		{
-			if (!isset($goals_by_category[$goal->category]))
-				$goals_by_category[$goal->category] = [];
-			$goals_by_category[$goal->category][] = $goal;
+			$category = isset(PleesherExtension::$goal_data[$goal->code]->category) ? PleesherExtension::$goal_data[$goal->code]->category : 'other';
+			if (!isset($goals_by_category[$category]))
+				$goals_by_category[$category] = [];
+			$goals_by_category[$category][] = $goal;
 		}
 
 		$goals_by_category = array_replace(array_flip(PleesherExtension::$goal_categories), $goals_by_category);
