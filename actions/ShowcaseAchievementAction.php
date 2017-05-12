@@ -4,7 +4,6 @@ class Pleesher_ShowcaseAchievementAction extends Pleesher_Action
 	public function getAllowedParams()
 	{
 		return array_merge(parent::getAllowedParams(), [
-			'user_id' => null,
 			'goal_id' => null,
 			'remove' => 0
 		]);
