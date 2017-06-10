@@ -19,7 +19,7 @@
 		><a target="_blank" href="https://pleesher.com/Liquipedia"
 		>Manage Liquipedia Goals</a> - Ask PoP for website account's username/password
 	<p>Use this to add or remove goals.</p>
-	<p>Checker functions needs to be added to this wiki before new goals become available. See with PoP or fo-nttax.
+	<p>Checker functions needs to be added to this wiki before new goals become available. See with PoP or FO-nTTaX.
 </div>
 
 <div class="pleesher-admin-block">
