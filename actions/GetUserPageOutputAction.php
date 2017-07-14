@@ -13,6 +13,9 @@ class Pleesher_GetUserPageOutputAction extends Pleesher_Action
 		$user_name = $this->getParameter('username');
 
 		$output = '';
+
+		PleesherExtension::$pleesher->setExceptionHandler(PleesherExtension::$pleesher->getDefaultExceptionHandler());
+
 		try {
 			$achievement_count = count(PleesherExtension::getAchievements($user_name)) ?: 0;
 			$showcased_achievement_count = count(PleesherExtension::getShowcasedAchievements($user_name));
@@ -43,6 +46,8 @@ class Pleesher_GetUserPageOutputAction extends Pleesher_Action
 			else
 				$output .= PleesherExtension::render('error', ['error_message' => PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
 		}
+
+		PleesherExtension::$pleesher->restoreExceptionHandler();
 
 		$this->getResult()->addValue(null, 'output', $output);
 	}
