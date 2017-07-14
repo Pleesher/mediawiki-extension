@@ -11,9 +11,9 @@
 	"requires": {
 		"MediaWiki": ">= 1.25.0"
 	},
-	
+
 	"callback": "PleesherExtension::initialize",
-	
+
 	"MessagesDirs": {
 		"PleesherExtension": [
 			"i18n"
@@ -31,6 +31,7 @@
 		"Pleesher_DisabledPage": "pages/DisabledPage.php",
 		"Pleesher_ErrorPage": "pages/ErrorPage.php",
 		"Pleesher_GetNotificationsAction": "actions/GetNotificationsAction.php",
+		"Pleesher_GetUserPageOutputAction": "actions/GetUserPageOutputAction.php",
 		"Pleesher_GoalDetailsPage": "pages/GoalDetailsPage.php",
 		"Pleesher_GoalListPage": "pages/GoalListPage.php",
 		"Pleesher_MarkNotificationsReadAction": "actions/MarkNotificationsReadAction.php",
@@ -61,6 +62,7 @@
 	},
 	"APIModules": {
 		"pleesher.check_achievements": "Pleesher_CheckAchievementsAction",
+		"pleesher.get_user_page_output": "Pleesher_GetUserPageOutputAction",
 		"pleesher.mark_notifications_read": "Pleesher_MarkNotificationsReadAction",
 		"pleesher.notifications": "Pleesher_GetNotificationsAction",
 		"pleesher.refresh_cache": "Pleesher_RefreshCacheAction",
@@ -72,12 +74,6 @@
 		"pleesher": {
 			"scripts": [
 				"resources/js/pleesher.js"
-			],
-			"position": "top"
-		},
-		"pleesher.notifications": {
-			"scripts": [
-				"resources/js/notifications.js"
 			],
 			"messages": [
 				"pleesher.achievement_unlocked"

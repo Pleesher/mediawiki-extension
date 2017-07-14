@@ -11,11 +11,23 @@ class PleesherExtension
 	/**
 	 * @var \Pleesher\Client\Client
 	 */
-	public static $pdo;
 	public static $pleesher;
+
+	/**
+	 * @var \PDO
+	 */
+	public static $pdo;
 	public static $goal_data;
 	public static $goal_categories;
+
+	/**
+	 * @var PleesherImplementation
+	 */
 	public static $implementation;
+
+	/**
+	 * @var Pleesher_ViewHelper
+	 */
 	public static $view_helper;
 
 	/**
@@ -143,11 +155,11 @@ class PleesherExtension
 
 		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
 		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
-		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher.js'));
+		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher-inline.js'));
 
 		if (!self::isDisabled() && $out->getUser()->isLoggedIn())
 		{
-			$out->addModules('pleesher.notifications');
+			$out->addModules('pleesher');
 
 			// using $out->addModules('toastr') fails, for some reason
 			$out->addModuleScripts('toastr');
@@ -220,7 +232,7 @@ class PleesherExtension
 	/**
 	 * Called after a page was saved
 	 */
-	public static function pageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
+	public static function pageContentSaveComplete($article, User $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 	{
 		if (!self::$implementation->isExtensionEnabled())
 			return;
@@ -240,7 +252,7 @@ class PleesherExtension
 	 * Displays a Pleesher goal
 	 * @return string A HTML template of it
 	 */
-	public static function viewGoal($input, array $args, Parser $parser, PPFrame $frame)
+	public static function viewGoal($input, array $args, Parser $parser = null, PPFrame $frame = null)
 	{
 		$goal_code = $args['code'];
 		$user_name = isset($args['perspective']) ? $args['perspective'] : null;
@@ -258,7 +270,7 @@ class PleesherExtension
 	 * Displays a goal "showcase" (goals that a user chose to brag about)
 	 * @return string A HTML template of it
 	 */
-	public static function viewShowcase($input, array $args, Parser $parser, PPFrame $frame)
+	public static function viewShowcase($input, array $args, Parser $parser = null, PPFrame $frame = null)
 	{
 		$user_name = isset($args['user']) ? $args['user'] : null;
 		$user_id = !is_null($user_name) ? User::idFromName($user_name) : null;
@@ -301,7 +313,7 @@ class PleesherExtension
 	 * Displays the user's list of achievements
 	 * @return string A HTML template of it
 	 */
-	public static function viewAchievements($input, array $args, Parser $parser, PPFrame $frame)
+	public static function viewAchievements($input, array $args, Parser $parser = null, PPFrame $frame = null)
 	{
 		if (!isset($args['user']))
 			return '';
@@ -362,7 +374,7 @@ class PleesherExtension
 	/**
 	 * Retrieves a list of Pleesher users (as wiki users)
 	 * @param array $options An optional array of options to be passed over to Client::getUsers
-	 * @return array A list of Pleesher users
+	 * @return User[] A list of Pleesher users
 	 */
 	public static function getUsers(array $options = [])
 	{
