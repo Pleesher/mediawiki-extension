@@ -1,7 +1,7 @@
 <?php
-use Pleesher\Client\Cache\LocalStorage;
-use Pleesher\Client\Cache\DatabaseStorage;
 use MediaWiki\Auth\AuthManager;
+use Pleesher\Client\Cache\DatabaseStorage;
+use Pleesher\Client\Cache\LocalStorage;
 use Pleesher\Client\Exception\Exception;
 
 class PleesherExtension
@@ -190,40 +190,14 @@ class PleesherExtension
 
 				if ($contenttext == $text)
 				{
-					self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
+					$user_name = $title->getText();
+					$user = PleesherExtension::getUser($user_name);
+					if (!is_object($user))
+						return;
 
-					try {
-						$user_name = $title->getText();
-						$achievement_count = count(self::getAchievements($user_name)) ?: 0;
-						$showcased_achievement_count = count(self::getShowcasedAchievements($user_name));
-						$goal_count = count(self::$goal_data);
-
-						$user = PleesherExtension::getUser($user_name);
-						if (!is_object($user))
-							return;
-
-						if (!empty($text))
-							$text .= PHP_EOL . PHP_EOL;
-
-						$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
-							'user' => $user,
-							'closest_achievements' => self::getClosestAchievements($user_name, 3),
-							'achievement_count' => $achievement_count,
-							'showcased_achievement_count' => $showcased_achievement_count,
-							'goal_count' => $goal_count
-						]));
-
-					} catch (Exception $e) {
-						if (!empty($text))
-							$text .= PHP_EOL . PHP_EOL;
-
-						if ($e instanceof PleesherDisabledException)
-							$text .= self::render('disabled');
-						else
-							$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
-					}
-
-					self::$pleesher->restoreExceptionHandler();
+					$text .= self::render('user.wiki', [
+						'user' => $user
+					]);
 				}
 			}
 		}
