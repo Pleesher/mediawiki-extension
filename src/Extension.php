@@ -49,7 +49,7 @@ class PleesherExtension
 	 */
 	public static function getSettingValue($key, $default = null)
 	{
-		$sql = 'SELECT value FROM pleesher_setting WHERE `key` = :key';
+		$sql = 'SELECT value FROM ' . self::prefixTableName('pleesher_setting') . ' WHERE `key` = :key';
 		$params = array(':key' => $key);
 
 		$query = self::$pdo->prepare($sql);
@@ -66,7 +66,7 @@ class PleesherExtension
 	 */
 	public static function setSettingValue($key, $value)
 	{
-		$sql = 'REPLACE INTO pleesher_setting (`key`, `value`) VALUES (:key, :value)';
+		$sql = 'REPLACE INTO ' . self::prefixTableName('pleesher_setting') . ' (`key`, `value`) VALUES (:key, :value)';
 		$params = array(':key' => $key, ':value' => $value);
 
 		$query = self::$pdo->prepare($sql);
@@ -97,7 +97,7 @@ class PleesherExtension
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, 'pleesher_cache')));
+		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, self::prefixTableName('pleesher_cache'))));
 
 		self::$view_helper = new Pleesher_ViewHelper(self::$implementation->getI18nPrefix());
 
@@ -157,13 +157,19 @@ class PleesherExtension
 		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
 		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher-inline.js'));
 
-		if (!self::isDisabled() && $out->getUser()->isLoggedIn())
+		if (!self::isDisabled())
 		{
-			$out->addModules('pleesher');
+			if ($out->getTitle()->getNamespace() == NS_USER)
+				$out->addModules('pleesher-user-page');
 
-			// using $out->addModules('toastr') fails, for some reason
-			$out->addModuleScripts('toastr');
-			$out->addModuleStyles('toastr');
+			if ($out->getUser()->isLoggedIn())
+			{
+				$out->addModules('pleesher');
+
+				// using $out->addModules('toastr') fails, for some reason
+				$out->addModuleScripts('toastr');
+				$out->addModuleStyles('toastr');
+			}
 		}
 	}
 
@@ -498,6 +504,11 @@ class PleesherExtension
 		ob_start();
 		require self::getAbsoluteViewPath($view_path);
 		return ob_get_clean();
+	}
+
+	public static function prefixTableName($name)
+	{
+		return isset($GLOBALS['wgDBprefix']) ? $GLOBALS['wgDBprefix'] . $name : $name;
 	}
 
 	protected static function pleesherUserToWikiUser($pleesher_user)

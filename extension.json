@@ -80,6 +80,12 @@
 			],
 			"position": "bottom"
 		},
+		"pleesher-user-page": {
+			"scripts": [
+				"resources/js/pleesher-user-page.js"
+			],
+			"position": "top"
+		},
 		"toastr": {
 			"scripts": [
 				"resources/js/toastr.min.js"
