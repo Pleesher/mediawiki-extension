@@ -38,13 +38,19 @@ class Pleesher_GetUserPageOutputAction extends Pleesher_Action
 
 		} catch (Exception $e)
 		{
+
 			if (!empty($output))
 				$output .= PHP_EOL . PHP_EOL;
 
 			if ($e instanceof PleesherDisabledException)
 				$output .= PleesherExtension::render('disabled');
-			else
+			else if ($e instanceof \Pleesher\Client\Exception\Exception)
 				$output .= PleesherExtension::render('error', ['error_message' => PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
+			else
+			{
+				PleesherExtension::$pleesher->logger->error($e);
+				$output .= PleesherExtension::render('error', ['error_message' => PleesherExtension::$view_helper->text('pleesher.error.text.generic')]);
+			}
 		}
 
 		PleesherExtension::$pleesher->restoreExceptionHandler();
