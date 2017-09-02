@@ -38,7 +38,6 @@ class Pleesher_GetUserPageOutputAction extends Pleesher_Action
 
 		} catch (Exception $e)
 		{
-
 			if (!empty($output))
 				$output .= PHP_EOL . PHP_EOL;
 
