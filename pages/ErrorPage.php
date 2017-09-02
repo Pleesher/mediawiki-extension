@@ -14,11 +14,11 @@ class Pleesher_ErrorPage extends Pleesher_SpecialPage
 		$this->checkReadOnly();
 		$this->outputHeader();
 
-		if (isset($_SESSION[\PleesherExtension::class]['exception']))
+		if (isset($_SESSION['PleesherExtension']['exception']))
 		{
-			$e = $_SESSION[\PleesherExtension::class]['exception'];
+			$e = $_SESSION['PleesherExtension']['exception'];
 			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: []);
-			unset($_SESSION[\PleesherExtension::class]['exception']);
+			unset($_SESSION['PleesherExtension']['exception']);
 		}
 		else
 			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.generic');
