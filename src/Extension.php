@@ -49,7 +49,7 @@ class PleesherExtension
 	 */
 	public static function getSettingValue($key, $default = null)
 	{
-		$sql = 'SELECT value FROM ' . self::prefixTableName('pleesher_setting') . ' WHERE `key` = :key';
+		$sql = 'SELECT value FROM ' . self::pleesherPrefixTableName('pleesher_setting') . ' WHERE `key` = :key';
 		$params = array(':key' => $key);
 
 		$query = self::$pdo->prepare($sql);
@@ -66,7 +66,7 @@ class PleesherExtension
 	 */
 	public static function setSettingValue($key, $value)
 	{
-		$sql = 'REPLACE INTO ' . self::prefixTableName('pleesher_setting') . ' (`key`, `value`) VALUES (:key, :value)';
+		$sql = 'REPLACE INTO ' . self::pleesherPrefixTableName('pleesher_setting') . ' (`key`, `value`) VALUES (:key, :value)';
 		$params = array(':key' => $key, ':value' => $value);
 
 		$query = self::$pdo->prepare($sql);
@@ -97,7 +97,7 @@ class PleesherExtension
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, self::prefixTableName('pleesher_cache'))));
+		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, self::pleesherPrefixTableName('pleesher_cache'))));
 
 		self::$view_helper = new Pleesher_ViewHelper(self::$implementation->getI18nPrefix());
 
@@ -373,8 +373,11 @@ class PleesherExtension
 
 	public static function getUser($user_name)
 	{
+		if (!AuthManager::singleton()->userExists($user_name))
+			return null;
+
 		$pleesher_user = self::$pleesher->getUser($user_name);
-		$wiki_user = self::pleesherUserToWikiUser($pleesher_user);
+		$wiki_user = self::pleesherUserToWikiUser($pleesher_user, false);
 		if (is_null($wiki_user))
 			return null;
 
@@ -511,9 +514,14 @@ class PleesherExtension
 		return isset($GLOBALS['wgDBprefix']) ? $GLOBALS['wgDBprefix'] . $name : $name;
 	}
 
-	protected static function pleesherUserToWikiUser($pleesher_user)
+	protected static function pleesherPrefixTableName($name)
 	{
-		if (!AuthManager::singleton()->userExists($pleesher_user->id))
+		return isset($GLOBALS['wgPleesherDatabasePrefix']) ? $GLOBALS['wgPleesherDatabasePrefix'] . $name : $name;
+	}
+
+	protected static function pleesherUserToWikiUser($pleesher_user, $check_existence = true)
+	{
+		if ($check_existence && !AuthManager::singleton()->userExists($pleesher_user->id))
 			return null;
 
 		$wiki_user = User::newFromName($pleesher_user->id);
