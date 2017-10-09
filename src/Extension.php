@@ -1,7 +1,7 @@
 <?php
-use Pleesher\Client\Cache\LocalStorage;
-use Pleesher\Client\Cache\DatabaseStorage;
 use MediaWiki\Auth\AuthManager;
+use Pleesher\Client\Cache\DatabaseStorage;
+use Pleesher\Client\Cache\LocalStorage;
 use Pleesher\Client\Exception\Exception;
 
 class PleesherExtension
@@ -11,11 +11,23 @@ class PleesherExtension
 	/**
 	 * @var \Pleesher\Client\Client
 	 */
-	public static $pdo;
 	public static $pleesher;
+
+	/**
+	 * @var \PDO
+	 */
+	public static $pdo;
 	public static $goal_data;
 	public static $goal_categories;
+
+	/**
+	 * @var PleesherImplementation
+	 */
 	public static $implementation;
+
+	/**
+	 * @var Pleesher_ViewHelper
+	 */
 	public static $view_helper;
 
 	/**
@@ -37,7 +49,7 @@ class PleesherExtension
 	 */
 	public static function getSettingValue($key, $default = null)
 	{
-		$sql = 'SELECT value FROM pleesher_setting WHERE `key` = :key';
+		$sql = 'SELECT value FROM ' . self::pleesherPrefixTableName('pleesher_setting') . ' WHERE `key` = :key';
 		$params = array(':key' => $key);
 
 		$query = self::$pdo->prepare($sql);
@@ -54,7 +66,7 @@ class PleesherExtension
 	 */
 	public static function setSettingValue($key, $value)
 	{
-		$sql = 'REPLACE INTO pleesher_setting (`key`, `value`) VALUES (:key, :value)';
+		$sql = 'REPLACE INTO ' . self::pleesherPrefixTableName('pleesher_setting') . ' (`key`, `value`) VALUES (:key, :value)';
 		$params = array(':key' => $key, ':value' => $value);
 
 		$query = self::$pdo->prepare($sql);
@@ -85,7 +97,7 @@ class PleesherExtension
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, 'pleesher_cache')));
+		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, self::pleesherPrefixTableName('pleesher_cache'))));
 
 		self::$view_helper = new Pleesher_ViewHelper(self::$implementation->getI18nPrefix());
 
@@ -143,15 +155,21 @@ class PleesherExtension
 
 		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
 		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
-		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher.js'));
+		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher-inline.js'));
 
-		if (!self::isDisabled() && $out->getUser()->isLoggedIn())
+		if (!self::isDisabled())
 		{
-			$out->addModules('pleesher.notifications');
+			if ($out->getTitle()->getNamespace() == NS_USER)
+				$out->addModules('pleesher-user-page');
 
-			// using $out->addModules('toastr') fails, for some reason
-			$out->addModuleScripts('toastr');
-			$out->addModuleStyles('toastr');
+			if ($out->getUser()->isLoggedIn())
+			{
+				$out->addModules('pleesher');
+
+				// using $out->addModules('toastr') fails, for some reason
+				$out->addModuleScripts('toastr');
+				$out->addModuleStyles('toastr');
+			}
 		}
 	}
 
@@ -178,40 +196,14 @@ class PleesherExtension
 
 				if ($contenttext == $text)
 				{
-					self::$pleesher->setExceptionHandler(self::$pleesher->getDefaultExceptionHandler());
+					$user_name = $title->getText();
+					$user = PleesherExtension::getUser($user_name);
+					if (!is_object($user))
+						return;
 
-					try {
-						$user_name = $title->getText();
-						$achievement_count = count(self::getAchievements($user_name)) ?: 0;
-						$showcased_achievement_count = count(self::getShowcasedAchievements($user_name));
-						$goal_count = count(self::$goal_data);
-
-						$user = PleesherExtension::getUser($user_name);
-						if (!is_object($user))
-							return;
-
-						if (!empty($text))
-							$text .= PHP_EOL . PHP_EOL;
-
-						$text .= self::render('user.wiki', array_merge(self::$implementation->getUserPageData($user), [
-							'user' => $user,
-							'closest_achievements' => self::getClosestAchievements($user_name, 3),
-							'achievement_count' => $achievement_count,
-							'showcased_achievement_count' => $showcased_achievement_count,
-							'goal_count' => $goal_count
-						]));
-
-					} catch (Exception $e) {
-						if (!empty($text))
-							$text .= PHP_EOL . PHP_EOL;
-
-						if ($e instanceof PleesherDisabledException)
-							$text .= self::render('disabled');
-						else
-							$text .= self::render('error', ['error_message' => self::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: [])]);
-					}
-
-					self::$pleesher->restoreExceptionHandler();
+					$text .= self::render('user.wiki', [
+						'user' => $user
+					]);
 				}
 			}
 		}
@@ -220,7 +212,7 @@ class PleesherExtension
 	/**
 	 * Called after a page was saved
 	 */
-	public static function pageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
+	public static function pageContentSaveComplete($article, User $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 	{
 		if (!self::$implementation->isExtensionEnabled())
 			return;
@@ -240,7 +232,7 @@ class PleesherExtension
 	 * Displays a Pleesher goal
 	 * @return string A HTML template of it
 	 */
-	public static function viewGoal($input, array $args, Parser $parser, PPFrame $frame)
+	public static function viewGoal($input, array $args, Parser $parser = null, PPFrame $frame = null)
 	{
 		$goal_code = $args['code'];
 		$user_name = isset($args['perspective']) ? $args['perspective'] : null;
@@ -258,7 +250,7 @@ class PleesherExtension
 	 * Displays a goal "showcase" (goals that a user chose to brag about)
 	 * @return string A HTML template of it
 	 */
-	public static function viewShowcase($input, array $args, Parser $parser, PPFrame $frame)
+	public static function viewShowcase($input, array $args, Parser $parser = null, PPFrame $frame = null)
 	{
 		$user_name = isset($args['user']) ? $args['user'] : null;
 		$user_id = !is_null($user_name) ? User::idFromName($user_name) : null;
@@ -301,7 +293,7 @@ class PleesherExtension
 	 * Displays the user's list of achievements
 	 * @return string A HTML template of it
 	 */
-	public static function viewAchievements($input, array $args, Parser $parser, PPFrame $frame)
+	public static function viewAchievements($input, array $args, Parser $parser = null, PPFrame $frame = null)
 	{
 		if (!isset($args['user']))
 			return '';
@@ -362,7 +354,7 @@ class PleesherExtension
 	/**
 	 * Retrieves a list of Pleesher users (as wiki users)
 	 * @param array $options An optional array of options to be passed over to Client::getUsers
-	 * @return array A list of Pleesher users
+	 * @return User[] A list of Pleesher users
 	 */
 	public static function getUsers(array $options = [])
 	{
@@ -381,8 +373,11 @@ class PleesherExtension
 
 	public static function getUser($user_name)
 	{
+		if (!AuthManager::singleton()->userExists($user_name))
+			return null;
+
 		$pleesher_user = self::$pleesher->getUser($user_name);
-		$wiki_user = self::pleesherUserToWikiUser($pleesher_user);
+		$wiki_user = self::pleesherUserToWikiUser($pleesher_user, false);
 		if (is_null($wiki_user))
 			return null;
 
@@ -514,9 +509,19 @@ class PleesherExtension
 		return ob_get_clean();
 	}
 
-	protected static function pleesherUserToWikiUser($pleesher_user)
+	public static function prefixTableName($name)
 	{
-		if (!AuthManager::singleton()->userExists($pleesher_user->id))
+		return isset($GLOBALS['wgDBprefix']) ? $GLOBALS['wgDBprefix'] . $name : $name;
+	}
+
+	protected static function pleesherPrefixTableName($name)
+	{
+		return isset($GLOBALS['wgPleesherDatabasePrefix']) ? $GLOBALS['wgPleesherDatabasePrefix'] . $name : $name;
+	}
+
+	protected static function pleesherUserToWikiUser($pleesher_user, $check_existence = true)
+	{
+		if ($check_existence && !AuthManager::singleton()->userExists($pleesher_user->id))
 			return null;
 
 		$wiki_user = User::newFromName($pleesher_user->id);
