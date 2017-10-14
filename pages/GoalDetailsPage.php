@@ -20,27 +20,29 @@ class Pleesher_GoalDetailsPage extends Pleesher_SpecialPage
 		$this->checkReadOnly();
 		$this->outputHeader();
 
-		$request = $this->getRequest();
-		$goal_code = $subPage;
+		$goal_id_or_code = preg_replace('/^(\d+)_(.*)$/', '\1', $subPage);
 
 		$user = $this->getUser();
 		$user_name = $user->getName();
 
-		$goal = PleesherExtension::getGoal($goal_code, ['user_id' => $user->isLoggedIn() ? $user_name : null]);
+		$goal = PleesherExtension::getGoal($goal_id_or_code, ['user_id' => $user->isLoggedIn() ? $user_name : null]);
 		if (!is_object($goal))
 		{
 			header('Location: ' . PleesherExtension::$view_helper->pageUrl('Special:AchievementsError', true));
 			die;
 		}
 
-		$achievers = PleesherExtension::getAchievers($goal_code);
+		$achievers = PleesherExtension::getAchievers($goal_id_or_code);
 		$html = PleesherExtension::render('goal_details', [
 			'user' => $user,
 			'goal' => $goal,
-			'achievers' => $achievers
+			'achievers' => $achievers,
+			'canonical_url' => PleesherExtension::$view_helper->pageUrl('Special:AchievementDetails/' . PleesherExtension::$view_helper->slugifyUrlId($goal->id, $goal->title))
 		]);
 
 		$this->getOutput()->setPageTitle(PleesherExtension::$view_helper->text('pleesher.goal_details.title', [$goal->title]));
 		$this->getOutput()->addHTML($html);
+
+		return null;
 	}
 }

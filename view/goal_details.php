@@ -1,3 +1,7 @@
+<?php if (isset($canonical_url)): ?>
+<link rel="canonical" href="<?php echo $canonical_url ?>">
+<?php endif ?>
+
 <?php echo PleesherExtension::render('goal', [
 	'user' => isset($user) ? $user : null,
 	'goal' => $goal
