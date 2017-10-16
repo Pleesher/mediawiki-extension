@@ -5,6 +5,7 @@ $(function () {
 				var event_ids = [];
 				for (var i in result.notifications) {
 					var notification = result.notifications[i];
+					toastr.options.timeOut = 12000;
 					toastr.success(
 						'<a href="' + mw.util.getUrl('Special:Achievements') + '#goal-' + notification.goal.code + '">' + result.notifications[i].goal.title + '</a>',
 						mw.msg('pleesher.achievement_unlocked'));
