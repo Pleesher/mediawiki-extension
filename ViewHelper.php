@@ -30,4 +30,25 @@ class Pleesher_ViewHelper
 	{
 		return $this->implementation_i18n_prefix;
 	}
+
+	public function slugifyUrlId($id, $text)
+	{
+		return $id . '_' . $this->slugify($text);
+	}
+
+	public function slugify($text)
+	{
+		// Replace non letter or digits by -
+		$text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+		// Trim
+		$text = trim($text, '-');
+		// Convert to ASCII
+		$text = utf8_decode($text);
+		// Lowercase
+		$text = strtolower($text);
+		// Remove unwanted characters
+		$text = preg_replace('~[^-\w]+~', '', $text);
+
+		return empty($text) ? null : $text;
+	}
 }
