@@ -177,36 +177,27 @@ class PleesherExtension
 	 * Alter text page "parts" display before it's displayed.
 	 * Here, used for users' profile pages.
 	 */
-	public static function parserBeforeStrip(&$parser, &$text, &$strip_state)
+	public static function skinAfterContent( &$data, Skin $skin )
 	{
 		if (!self::$implementation->isExtensionEnabled())
 			return;
 
-		$title = $parser->getTitle();
+		$title = $skin->getTitle();
 
 		if ($title->getNamespace() == NS_USER)
 		{
-			$wikipage = WikiPage::factory($title);
-			$revision = $wikipage->getRevision();
+			$user_name = $title->getText();
+			$user = PleesherExtension::getUser($user_name);
+			if (!is_object($user))
+				return;
 
-			if (is_object($revision))
-			{
-				$content = $revision->getContent(Revision::FOR_PUBLIC);
-				$contenttext = ContentHandler::getContentText($content);
-
-				if ($contenttext == $text)
-				{
-					$user_name = $title->getText();
-					$user = PleesherExtension::getUser($user_name);
-					if (!is_object($user))
-						return;
-
-					$text .= self::render('user.wiki', [
-						'user' => $user
-					]);
-				}
-			}
+			$data = $skin->getOutput()->parseInline(
+				self::render('user.wiki', [
+					'user' => $user
+				])
+			) . $data;
 		}
+	
 	}
 
 	/**
