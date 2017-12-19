@@ -50,8 +50,8 @@
 		"BeforePageDisplay": [
 			"PleesherExtension::beforePageDisplay"
 		],
-		"ParserBeforeStrip": [
-			"PleesherExtension::parserBeforeStrip"
+		"SkinAfterContent": [
+			"PleesherExtension::skinAfterContent"
 		],
 		"PageContentSaveComplete": [
 			"PleesherExtension::pageContentSaveComplete"
