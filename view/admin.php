@@ -33,6 +33,26 @@
 <h3>Advanced</h3>
 
 <div class="pleesher-admin-block">
+	<p class="pleesher-admin-block-title">Refresh specific user's cache</p>
+	Use this when something seems wrong with speficic users. It will refresh all cache related to them.
+
+	<form method="get" action="<?php echo $h->baseActionUrl() ?>" style="margin-top:10px">
+		<p>
+			<select name="user_name">
+				<?php foreach ($users as $user): ?>
+				<option value="<?php echo $user->getName() ?>"><?php echo $user->getName() ?></option>
+				<?php endforeach ?>
+			</select>
+			<input type="hidden" name="action" value="pleesher.refresh_cache" />
+			<input type="hidden" name="refresh" value="all" />
+			<input type="submit" value="Refresh" />
+		</p>
+	</form>
+
+	<p><strong>This is faster than below actions. Use it whenever possible when the issue doesn't look global.</strong></p>
+</div>
+
+<div class="pleesher-admin-block">
 	<p class="pleesher-admin-block-title"
 		><a data-redirect="self" data-confirm="Are you sure this is required?"
 		href="<?php echo $h->actionUrl('pleesher.refresh_cache', ['refresh' => 'achievements']) ?>"

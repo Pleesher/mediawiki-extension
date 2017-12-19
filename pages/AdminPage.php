@@ -18,8 +18,12 @@ class Pleesher_AdminPage extends Pleesher_SpecialPage
 		$this->outputHeader();
 
 		$pleesher_disabled = PleesherExtension::getSettingValue('disabled', '0') == '1';
+		$users = PleesherExtension::getUsers();
 
-		$html = PleesherExtension::render('admin', ['pleesher_disabled' => $pleesher_disabled]);
+		$html = PleesherExtension::render('admin', [
+			'pleesher_disabled' => $pleesher_disabled,
+			'users' => $users
+		]);
 		$this->getOutput()->addHTML($html);
 	}
 }
