@@ -18,7 +18,12 @@ class Pleesher_ViewHelper
 
 	public function actionUrl($name, array $params = [])
 	{
-		return $GLOBALS['wgScriptPath'] . '/api.php?' . http_build_query(array_merge(['action' => $name], $params));
+		return $this->baseActionUrl() . '?' . http_build_query(array_merge(['action' => $name], $params));
+	}
+
+	public function baseActionUrl()
+	{
+		return $GLOBALS['wgScriptPath'] . '/api.php';
 	}
 
 	public function text($key, array $params = [])

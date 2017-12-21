@@ -36,7 +36,14 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 		}
 
 		if (isset($user_name))
-			PleesherExtension::$pleesher->refreshCache($user_name, $keys);
+		{
+			PleesherExtension::$pleesher->refreshAllCache($user_name, $keys);
+			if (is_null($keys))
+			{
+				PleesherExtension::$pleesher->refreshCache(null, 'user', $user_name);
+				PleesherExtension::$pleesher->getGoals(['user_id' => $user_name, 'auto_award' => true, 'auto_revoke' => true]);
+			}
+		}
 		else
 			PleesherExtension::$pleesher->refreshCacheGlobally($keys);
 
