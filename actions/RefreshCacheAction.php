@@ -22,7 +22,7 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 				$keys = ['goal'];
 				break;
 			case 'achievements':
-				$keys = ['goal_relative_to_user', 'user'];
+				$keys = ['goal_relative_to_user', 'user', 'achievers_of_*', 'participations_*'];
 				break;
 			case 'users':
 				$keys = ['user'];
