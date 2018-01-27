@@ -47,11 +47,11 @@ class Pleesher_RefreshCacheAction extends Pleesher_AdminAction
 		else
 			PleesherExtension::$pleesher->refreshCacheGlobally($keys);
 
-		if (is_null($keys) || in_array('goal_relative_to_user', $keys))
-		{
-			foreach (PleesherExtension::getUsers() as $user)
-				PleesherExtension::$pleesher->getGoals(['user_id' => $user->getName(), 'auto_award' => true, 'auto_revoke' => true]);
-		}
+//		if (is_null($keys) || in_array('goal_relative_to_user', $keys))
+//		{
+//			foreach (PleesherExtension::getUsers() as $user)
+//				PleesherExtension::$pleesher->getGoals(['user_id' => $user->getName(), 'auto_award' => true, 'auto_revoke' => true]);
+//		}
 
 		$this->getResult()->addValue(null, 'success', 1);
 	}
