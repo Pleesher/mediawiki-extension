@@ -151,10 +151,6 @@ class PleesherExtension
 		if (!self::$implementation->isExtensionEnabled())
 			return;
 
-		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
-		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
-		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher-inline.js'));
-
 		if (!self::isDisabled())
 		{
 			if ($out->getTitle()->getNamespace() == NS_USER)
