@@ -153,7 +153,7 @@ class PleesherExtension
 
 		if (!self::isDisabled())
 		{
-			if ($out->getTitle()->getNamespace() == NS_USER)
+			if ($out->getTitle()->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') === 'view')
 				$out->addModules('pleesher-user-page');
 
 			if ($out->getUser()->isLoggedIn())
@@ -178,16 +178,13 @@ class PleesherExtension
 
 		$title = $skin->getTitle();
 
-		if ($title->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') == 'view')
+		if ($title->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') === 'view')
 		{
 			$user_name = $title->getText();
-			$user = PleesherExtension::getUser($user_name);
-			if (!is_object($user))
-				return;
 
 			$data = $skin->getOutput()->parseInline(
 				self::render('user.wiki', [
-					'user' => $user
+					'user_name' => $user_name
 				])
 			) . $data;
 		}
