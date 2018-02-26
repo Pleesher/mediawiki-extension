@@ -8,26 +8,23 @@ class PleesherExtension
 {
 	const ADMIN_RIGHT = 'pleesher-admin';
 
-	/**
-	 * @var \Pleesher\Client\Client
-	 */
+	/** @var \Pleesher\Client\Client */
 	public static $pleesher;
 
-	/**
-	 * @var \PDO
-	 */
+	/** @var \Pleesher\Client\Cache\Storage */
+	public static $pleesher_cache_storage;
+
+	/** @var \PDO */
 	public static $pdo;
+
 	public static $goal_data;
+
 	public static $goal_categories;
 
-	/**
-	 * @var PleesherImplementation
-	 */
+	/** @var PleesherImplementation */
 	public static $implementation;
 
-	/**
-	 * @var Pleesher_ViewHelper
-	 */
+	/** @var Pleesher_ViewHelper */
 	public static $view_helper;
 
 	/**
@@ -97,7 +94,8 @@ class PleesherExtension
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
 		self::$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		self::$pleesher->setCacheStorage(new LocalStorage(new DatabaseStorage(self::$pdo, self::pleesherPrefixTableName('pleesher_cache'))));
+		self::$pleesher_cache_storage = new LocalStorage(new DatabaseStorage(self::$pdo, self::pleesherPrefixTableName('pleesher_cache')));
+		self::$pleesher->setCacheStorage(self::$pleesher_cache_storage);
 
 		self::$view_helper = new Pleesher_ViewHelper(self::$implementation->getI18nPrefix());
 
@@ -153,13 +151,9 @@ class PleesherExtension
 		if (!self::$implementation->isExtensionEnabled())
 			return;
 
-		// Not too happy about this... but loading pleesher.js through a module happens too late. There's gotta be a cleaner way though.
-		$out->addScript('<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>');
-		$out->addInlineScript(file_get_contents(__DIR__ . '/../resources/js/pleesher-inline.js'));
-
 		if (!self::isDisabled())
 		{
-			if ($out->getTitle()->getNamespace() == NS_USER)
+			if ($out->getTitle()->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') === 'view')
 				$out->addModules('pleesher-user-page');
 
 			if ($out->getUser()->isLoggedIn())
@@ -184,20 +178,16 @@ class PleesherExtension
 
 		$title = $skin->getTitle();
 
-		if ($title->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') == 'view')
+		if ($title->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') === 'view')
 		{
 			$user_name = $title->getText();
-			$user = PleesherExtension::getUser($user_name);
-			if (!is_object($user))
-				return;
 
 			$data = $skin->getOutput()->parseInline(
 				self::render('user.wiki', [
-					'user' => $user
+					'user_name' => $user_name
 				])
 			) . $data;
 		}
-	
 	}
 
 	/**
@@ -349,7 +339,16 @@ class PleesherExtension
 	 */
 	public static function getUsers(array $options = [])
 	{
+		$require_achievements_in_cache = isset($options['require_achievements_in_cache']) ? !!$options['require_achievements_in_cache'] : true;
+
 		$pleesher_users = self::$pleesher->getUsers($options);
+
+		if ($require_achievements_in_cache)
+		{
+			$pleesher_users = array_filter($pleesher_users, function($user) {
+				return is_array(self::$pleesher_cache_storage->loadAll($user->id, 'goal_relative_to_user'));
+			});
+		}
 
 		$users = array_map(function($pleesher_user) {
 			return self::pleesherUserToWikiUser($pleesher_user);

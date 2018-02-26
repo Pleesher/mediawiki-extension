@@ -18,7 +18,7 @@ class Pleesher_AdminPage extends Pleesher_SpecialPage
 		$this->outputHeader();
 
 		$pleesher_disabled = PleesherExtension::getSettingValue('disabled', '0') == '1';
-		$users = PleesherExtension::getUsers();
+		$users = PleesherExtension::getUsers(['require_achievements_in_cache' => false]);
 
 		$html = PleesherExtension::render('admin', [
 			'pleesher_disabled' => $pleesher_disabled,

@@ -22,20 +22,19 @@ class Pleesher_GetUserPageOutputAction extends Pleesher_Action
 			$goal_count = count(PleesherExtension::$goal_data);
 
 			$user = PleesherExtension::getUser($user_name);
-			if (!is_object($user))
-				return;
+			if (is_object($user))
+			{
+				if (!empty($output))
+					$output .= PHP_EOL . PHP_EOL;
 
-			if (!empty($output))
-				$output .= PHP_EOL . PHP_EOL;
-
-			$output .= PleesherExtension::render('user', array_merge(PleesherExtension::$implementation->getUserPageData($user), [
-				'user' => $user,
-				'closest_achievements' => PleesherExtension::getClosestAchievements($user_name, 3),
-				'achievement_count' => $achievement_count,
-				'showcased_achievement_count' => $showcased_achievement_count,
-				'goal_count' => $goal_count
-			]));
-
+				$output .= PleesherExtension::render('user', array_merge(PleesherExtension::$implementation->getUserPageData($user), [
+					'user' => $user,
+					'closest_achievements' => PleesherExtension::getClosestAchievements($user_name, 3),
+					'achievement_count' => $achievement_count,
+					'showcased_achievement_count' => $showcased_achievement_count,
+					'goal_count' => $goal_count
+				]));
+			}
 		} catch (Exception $e)
 		{
 			if (!empty($output))
