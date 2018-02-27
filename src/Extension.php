@@ -178,7 +178,7 @@ class PleesherExtension
 
 		$title = $skin->getTitle();
 
-		if ($title->getNamespace() == NS_USER && $skin->getRequest()->getVal('action', 'view') === 'view')
+		if ($title->getNamespace() == NS_USER && $title->equals($title->getRootTitle()) && $skin->getRequest()->getVal('action', 'view') === 'view')
 		{
 			$user_name = $title->getText();
 
