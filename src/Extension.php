@@ -180,7 +180,7 @@ class PleesherExtension
 
 		if ($title->getNamespace() == NS_USER && $title->equals($title->getRootTitle()) && $skin->getRequest()->getVal('action', 'view') === 'view')
 		{
-			$user_name = $title->getText();
+			$user_name = $title->getRootText();
 
 			$data = $skin->getOutput()->parseInline(
 				self::render('user.wiki', [
