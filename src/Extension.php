@@ -531,4 +531,14 @@ class PleesherExtension
 
 		return __DIR__ . '/../view/' . $view_path . '.php';
 	}
+
+	/**
+	 * Handle database creation via update.php
+	 */
+	public static function onLoadExtensionSchemaUpdates( \DatabaseUpdater $updater ) {
+		$updater->output( "\n" . 'Run updates for Pleesher' . "\n" );
+		$updater->addExtensionTable( 'pleesher_cache', __DIR__ . '/../sql/pleesher_cache.sql' );
+		$updater->addExtensionTable( 'pleesher_setting', __DIR__ . '/../sql/pleesher_setting.sql' );
+		echo "\n";
+	}
 }

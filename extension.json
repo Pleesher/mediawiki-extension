@@ -58,6 +58,9 @@
 		],
 		"ExtensionTypes": [
 			"PleesherExtension::extensionTypes"
+		],
+		"LoadExtensionSchemaUpdates": [
+			"PleesherExtension::onLoadExtensionSchemaUpdates"
 		]
 	},
 	"APIModules": {
