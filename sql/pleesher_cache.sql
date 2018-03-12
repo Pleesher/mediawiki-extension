@@ -7,4 +7,5 @@ CREATE TABLE IF NOT EXISTS /*_*/pleesher_cache (
 PRIMARY KEY (`user_id`, `key`, `id`)
 )
 COLLATE='utf8_general_ci'
-ENGINE=InnoDB;
+ENGINE=InnoDB
+DATA DIRECTORY='/var/lib/mysql/innodb_data';
