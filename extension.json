@@ -101,7 +101,7 @@
 	},
 	"ResourceFileModulePaths": {
 		"localBasePath": "",
-		"remoteExtPath": "PleesherExtension"
+		"remoteExtPath": "Pleesher"
 	},
 	"SpecialPages": {
 		"Achievements": "Pleesher_GoalListPage",
