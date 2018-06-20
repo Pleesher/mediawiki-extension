@@ -89,7 +89,6 @@ class PleesherExtension
 		if (!isset(self::$implementation))
 			throw new \Exception('PleesherExtension::setImplementation must be called before PleesherExtension is loaded');
 
-		require_once __DIR__ . '/../vendor/autoload.php';
 		self::$pleesher = new PleesherClient($GLOBALS['wgPleesherClientId'], $GLOBALS['wgPleesherClientSecret']);
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
