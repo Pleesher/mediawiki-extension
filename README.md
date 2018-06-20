@@ -6,7 +6,8 @@
 	wfLoadExtension( 'Pleesher' );
 
 * Add the following to your composer.local.json:
-```{
+```
+{
     "extra": {
         "merge-plugin": {
             "include": [
@@ -14,6 +15,7 @@
             ]
         }
     }
-}```
+}
+```
 
 * run the MediaWiki update script in `maintenance/update.php`
