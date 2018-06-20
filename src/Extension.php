@@ -159,10 +159,7 @@ class PleesherExtension
 			if ($out->getUser()->isLoggedIn())
 			{
 				$out->addModules('pleesher');
-
-				// using $out->addModules('toastr') fails, for some reason
-				$out->addModuleScripts('toastr');
-				$out->addModuleStyles('toastr');
+				$out->addModules('toastr');
 			}
 		}
 	}
