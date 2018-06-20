@@ -1,10 +1,10 @@
 # Installation
 
-* Extract the extension folder to extensions/LiquipediaMediaWikiMessages/
+* Extract the extension folder to extensions/Pleesher/
 * create the database table from the sql file in the repository
 * Add the following line to LocalSettings.php:
 
-	wfLoadExtension( 'LiquipediaMediaWikiMessages' );
+	wfLoadExtension( 'Pleesher' );
 
 * Add the following to your composer.local.json:
 ```{
