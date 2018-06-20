@@ -1,7 +1,6 @@
 # Installation
 
 * Extract the extension folder to extensions/Pleesher/
-* create the database table from the sql file in the repository
 * Add the following line to LocalSettings.php:
 
 	wfLoadExtension( 'Pleesher' );
@@ -16,3 +15,5 @@
         }
     }
 }```
+
+* run the MediaWiki update script in `maintenance/update.php`
