@@ -81,13 +81,16 @@
 			"messages": [
 				"pleesher.achievement_unlocked"
 			],
-			"position": "bottom"
+			"position": "bottom",
+			"dependencies": [
+				"toastr"
+			]
 		},
 		"pleesher-user-page": {
 			"scripts": [
 				"resources/js/pleesher-user-page.js"
 			],
-			"position": "top"
+			"position": "bottom"
 		},
 		"toastr": {
 			"scripts": [
@@ -96,7 +99,7 @@
 			"styles": [
 				"resources/css/toastr.min.css"
 			],
-			"position": "top"
+			"position": "bottom"
 		}
 	},
 	"ResourceFileModulePaths": {
