@@ -106,7 +106,7 @@ class PleesherExtension
 				die;
 			}
 
-			$_SESSION[__CLASS__]['exception'] = $e;
+			$_SESSION[__CLASS__]['exception'] = [$e->getErrorCode(), $e->getErrorParameters()];
 			header('Location: ' . self::$view_helper->pageUrl('Special:AchievementsError', true));
 			die;
 		});
