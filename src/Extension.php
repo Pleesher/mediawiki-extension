@@ -47,7 +47,7 @@ class PleesherExtension
 	public static function getSettingValue($key, $default = null)
 	{
 		$sql = 'SELECT value FROM ' . self::pleesherPrefixTableName('pleesher_setting') . ' WHERE `key` = :key';
-		$params = array(':key' => $key);
+		$params = [':key' => $key];
 
 		$query = self::$pdo->prepare($sql);
 		$query->execute($params);
@@ -64,7 +64,7 @@ class PleesherExtension
 	public static function setSettingValue($key, $value)
 	{
 		$sql = 'REPLACE INTO ' . self::pleesherPrefixTableName('pleesher_setting') . ' (`key`, `value`) VALUES (:key, :value)';
-		$params = array(':key' => $key, ':value' => $value);
+		$params = [':key' => $key, ':value' => $value];
 
 		$query = self::$pdo->prepare($sql);
 
