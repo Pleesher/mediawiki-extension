@@ -89,7 +89,6 @@ class PleesherExtension
 		if (!isset(self::$implementation))
 			throw new \Exception('PleesherExtension::setImplementation must be called before PleesherExtension is loaded');
 
-		require_once __DIR__ . '/../vendor/autoload.php';
 		self::$pleesher = new PleesherClient($GLOBALS['wgPleesherClientId'], $GLOBALS['wgPleesherClientSecret']);
 
 		self::$pdo = new \PDO($GLOBALS['wgDBtype'] . ':host=' . $GLOBALS['wgDBserver'] . ';dbname=' . $GLOBALS['wgDBname'], $GLOBALS['wgDBuser'], $GLOBALS['wgDBpassword']);
@@ -159,10 +158,7 @@ class PleesherExtension
 			if ($out->getUser()->isLoggedIn())
 			{
 				$out->addModules('pleesher');
-
-				// using $out->addModules('toastr') fails, for some reason
-				$out->addModuleScripts('toastr');
-				$out->addModuleStyles('toastr');
+				$out->addModules('toastr');
 			}
 		}
 	}
@@ -530,5 +526,13 @@ class PleesherExtension
 		}
 
 		return __DIR__ . '/../view/' . $view_path . '.php';
+	}
+
+	/**
+	 * Handle database creation via update.php
+	 */
+	public static function onLoadExtensionSchemaUpdates( \DatabaseUpdater $updater ) {
+		$updater->addExtensionTable( 'pleesher_cache', __DIR__ . '/../sql/pleesher_cache.sql' );
+		$updater->addExtensionTable( 'pleesher_setting', __DIR__ . '/../sql/pleesher_setting.sql' );
 	}
 }
