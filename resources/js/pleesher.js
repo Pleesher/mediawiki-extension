@@ -29,8 +29,8 @@ $(function () {
 	});
 
 	mw.loader.using('toastr').then(function() {
-		$.getJSON(mw.util.wikiScript('api') + '?action=pleesher.check_achievements', {format: 'json'}).success(function () {
-			$.getJSON(mw.util.wikiScript('api') + '?action=pleesher.notifications', {format: 'json'}).success(function (result) {
+		$.getJSON(mw.util.wikiScript('api') + '?action=pleesher.check_achievements', {format: 'json'}).done(function () {
+			$.getJSON(mw.util.wikiScript('api') + '?action=pleesher.notifications', {format: 'json'}).done(function (result) {
 				if (!jQuery.isEmptyObject(result.notifications)) {
 					var event_ids = [];
 					for (var i in result.notifications) {
