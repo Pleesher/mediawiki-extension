@@ -14,10 +14,10 @@ class Pleesher_ErrorPage extends Pleesher_SpecialPage
 		$this->checkReadOnly();
 		$this->outputHeader();
 
-		if (isset($_SESSION['PleesherExtension']['exception']))
+		if (isset($_SESSION['PleesherExtension']['exception']) && is_array($_SESSION['PleesherExtension']['exception']) && count($_SESSION['PleesherExtension']['exception']) === 2)
 		{
-			$e = $_SESSION['PleesherExtension']['exception'];
-			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.' . ($e->getErrorCode() ?: 'generic'), $e->getErrorParameters() ?: []);
+			list($error_code, $error_parameters) = $_SESSION['PleesherExtension']['exception'];
+			$error_message = \PleesherExtension::$view_helper->text('pleesher.error.text.' . ($error_code ?: 'generic'), $error_parameters ?: []);
 			unset($_SESSION['PleesherExtension']['exception']);
 		}
 		else
