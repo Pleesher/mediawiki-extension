@@ -90,7 +90,10 @@
 			"scripts": [
 				"resources/js/pleesher-user-page.js"
 			],
-			"position": "bottom"
+			"position": "bottom",
+			"dependencies": [
+				"mediawiki.util"
+			]
 		},
 		"toastr": {
 			"scripts": [
